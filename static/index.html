@@ -1,0 +1,2706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ScholarScout - Autonomous Academic Funding & Faculty Research Finding Agent">
+  <title>ScholarScout - Academic Funding & Faculty Research Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <div id="app" class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle Navigation Menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div class="brand-logo" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <h1>ScholarScout</h1>
+          <span class="brand-tagline">Academic Funding & Faculty Research Agent</span>
+        </div>
+      </div>
+
+      <div class="header-status">
+        <div class="status-pill" id="healthPill" title="Backend SQLite & API Health">
+          <span class="status-dot healthy" id="healthDot"></span>
+          <span id="healthStatusText">Backend Online</span>
+        </div>
+        <div class="status-pill" id="llmPill" title="LLM Reasoning Engine Status">
+          <span class="status-dot" id="llmDot"></span>
+          <span id="llmStatusText">Checking AI...</span>
+        </div>
+        <div class="status-pill" id="searchPill" title="Search Provider Status">
+          <span class="status-dot" id="searchDot"></span>
+          <span id="searchStatusText">Search: Direct</span>
+        </div>
+        <button type="button" class="active-profile-badge" id="headerProfileBadge" title="Click to view/edit Academic Profile">
+          <span class="profile-icon">🎓</span>
+          <span id="headerProfileName">Loading Profile...</span>
+        </button>
+        <button type="button" class="btn btn-primary start-agent-header-btn" id="headerStartAgentBtn" style="background: linear-gradient(135deg, #10B981, #059669); font-weight: 700; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); border: none;">
+          <span>⚡ Start Agent</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Application Layout with Sidebar Navigation -->
+    <div class="main-layout">
+      <!-- Sidebar Navigation -->
+      <nav class="sidebar" id="appSidebar" aria-label="Main Navigation">
+        <div class="sidebar-menu-label">RESEARCH WORKSPACE</div>
+        <ul class="nav-links">
+          <li class="nav-item active" data-tab="tab-overview" id="nav-tab-overview" tabindex="0" role="button">
+            <span class="nav-icon" aria-hidden="true">📊</span>
+            <span class="nav-label">Overview</span>
+          </li>
+          <li class="nav-item" data-tab="tab-profile" id="nav-tab-profile" tabindex="0" role="button">
+            <span class="nav-icon" aria-hidden="true">🎓</span>
+            <span class="nav-label">Academic Profile</span>
+            <span class="nav-counter" id="navProfileVersion">v1</span>
+          </li>
+          <li class="nav-item" data-tab="tab-research" id="nav-tab-research" tabindex="0" role="button">
+            <span class="nav-icon" aria-hidden="true">🚀</span>
+            <span class="nav-label">Research Setup</span>
+          </li>
+          <li class="nav-item" data-tab="tab-jobs" id="nav-tab-jobs" tabindex="0" role="button">
+            <span class="nav-icon" aria-hidden="true">📋</span>
+            <span class="nav-label">Research Jobs</span>
+            <span class="nav-counter" id="navJobsCount">0</span>
+          </li>
+          <li class="nav-item" data-tab="tab-universities" id="nav-tab-universities" tabindex="0" role="button">
+            <span class="nav-icon" aria-hidden="true">🏛️</span>
+            <span class="nav-label">Universities</span>
+            <span class="nav-counter" id="navUniversitiesCount">0</span>
+          </li>
+          <li class="nav-item" data-tab="tab-scholarships" id="nav-tab-scholarships" tabindex="0" role="button">
+            <span class="nav-icon" aria-hidden="true">🏆</span>
+            <span class="nav-label">Funding Opportunities</span>
+            <span class="nav-counter" id="scholarshipsCount">0</span>
+          </li>
+          <li class="nav-item" data-tab="tab-professors" id="nav-tab-professors" tabindex="0" role="button">
+            <span class="nav-icon" aria-hidden="true">🔬</span>
+            <span class="nav-label">Professors</span>
+            <span class="nav-counter" id="professorsCount">0</span>
+          </li>
+          <li class="nav-item" data-tab="tab-shortlist" id="nav-tab-shortlist" tabindex="0" role="button">
+            <span class="nav-icon" aria-hidden="true">⭐</span>
+            <span class="nav-label">Shortlist</span>
+            <span class="nav-counter" id="navShortlistCount">0</span>
+          </li>
+          <li class="nav-item" data-tab="tab-drafts" id="nav-tab-drafts" tabindex="0" role="button">
+            <span class="nav-icon" aria-hidden="true">✉️</span>
+            <span class="nav-label">Email Drafts</span>
+            <span class="nav-counter" id="draftsCount">0</span>
+          </li>
+          <li class="nav-item" data-tab="tab-settings" id="nav-tab-settings" tabindex="0" role="button">
+            <span class="nav-icon" aria-hidden="true">⚙️</span>
+            <span class="nav-label">Settings</span>
+          </li>
+        </ul>
+
+        <div class="sidebar-footer">
+          <div class="safety-badge">
+            <span class="shield-icon">🛡️</span>
+            <span>Draft-Only Mode Active</span>
+          </div>
+          <p class="sidebar-subtext">Automated email sending is permanently disabled. Review and send via your official mail client.</p>
+        </div>
+      </nav>
+
+      <!-- Main Content Area -->
+      <main class="content-area" id="mainContent">
+
+        <!-- ============================================================ -->
+        <!-- SCREEN 1: OVERVIEW -->
+        <!-- ============================================================ -->
+        <section id="tab-overview" class="tab-content active">
+          <div class="screen-header">
+            <div>
+              <h2>Executive Overview</h2>
+              <p class="text-muted">Real-time summary of verified academic funding, matched faculty, active research queue, and shortlisted targets.</p>
+            </div>
+            <div class="header-action-buttons">
+              <button type="button" class="btn btn-secondary btn-sm" id="overviewRefreshBtn">🔄 Refresh Dashboard</button>
+              <button type="button" class="btn btn-primary btn-sm" id="overviewNewResearchBtn">🚀 Start New Research</button>
+            </div>
+          </div>
+
+          <!-- Top Metrics Bar (Actual Database Counts) -->
+          <div class="metrics-grid">
+            <div class="metric-card" id="metricCardJobs" tabindex="0" role="button" title="View all research jobs">
+              <div class="metric-icon-wrap teal">📋</div>
+              <div class="metric-details">
+                <span class="metric-number" id="ovStatTotalJobs">0</span>
+                <span class="metric-label">Research Runs</span>
+                <span class="metric-sub" id="ovStatActiveJobs">0 active in queue</span>
+              </div>
+            </div>
+            <div class="metric-card" id="metricCardUnivs" tabindex="0" role="button" title="View tracked universities">
+              <div class="metric-icon-wrap navy">🏛️</div>
+              <div class="metric-details">
+                <span class="metric-number" id="ovStatTotalUnivs">0</span>
+                <span class="metric-label">Tracked Universities</span>
+                <span class="metric-sub" id="ovStatUnivsSub">Aggregated from crawls</span>
+              </div>
+            </div>
+            <div class="metric-card" id="metricCardAwards" tabindex="0" role="button" title="View funding opportunities">
+              <div class="metric-icon-wrap amber">🏆</div>
+              <div class="metric-details">
+                <span class="metric-number" id="ovStatTotalAwards">0</span>
+                <span class="metric-label">Funding Opportunities</span>
+                <span class="metric-sub" id="ovStatHighFitAwards">0 with ≥80% fit</span>
+              </div>
+            </div>
+            <div class="metric-card" id="metricCardProfessors" tabindex="0" role="button" title="View matching faculty">
+              <div class="metric-icon-wrap purple">🔬</div>
+              <div class="metric-details">
+                <span class="metric-number" id="ovStatTotalFaculty">0</span>
+                <span class="metric-label">Matching Faculty</span>
+                <span class="metric-sub" id="ovStatVerifiedEmails">0 verified emails</span>
+              </div>
+            </div>
+            <div class="metric-card" id="metricCardShortlist" tabindex="0" role="button" title="View shortlisted targets">
+              <div class="metric-icon-wrap gold">⭐</div>
+              <div class="metric-details">
+                <span class="metric-number" id="ovStatTotalShortlist">0</span>
+                <span class="metric-label">Shortlisted Items</span>
+                <span class="metric-sub" id="ovStatShortlistSub">Saved for application</span>
+              </div>
+            </div>
+            <div class="metric-card" id="metricCardDrafts" tabindex="0" role="button" title="View outreach drafts">
+              <div class="metric-icon-wrap blue">✉️</div>
+              <div class="metric-details">
+                <span class="metric-number" id="ovStatTotalDrafts">0</span>
+                <span class="metric-label">Outreach Drafts</span>
+                <span class="metric-sub" id="ovStatDraftsSub">Drafts ready to review</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Overview Two-Column Main Content -->
+          <div class="overview-grid">
+            <!-- Left Column: Recent Jobs & Top Funding -->
+            <div class="overview-col-main">
+              
+              <!-- Recent Research Jobs Section -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h3>Recent Research Runs</h3>
+                    <span class="badge badge-neutral" id="ovRecentJobsBadge">Actual Database Records</span>
+                  </div>
+                  <button type="button" class="btn btn-link btn-sm" id="ovViewAllJobsBtn">View All Jobs →</button>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="data-table" id="ovRecentJobsTable">
+                      <thead>
+                        <tr>
+                          <th>Job ID</th>
+                          <th>Target Institution / Source</th>
+                          <th>Scope</th>
+                          <th>Status</th>
+                          <th>Pages</th>
+                          <th>Awards</th>
+                          <th>Faculty</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="ovRecentJobsTableBody">
+                        <!-- Populated by JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="empty-state hidden" id="ovJobsEmptyState">
+                    <div class="empty-icon">🚀</div>
+                    <h4>No Research Runs Yet</h4>
+                    <p>Start your first targeted university crawl or launch autonomous discovery mode to find funding opportunities.</p>
+                    <button type="button" class="btn btn-primary btn-sm" id="ovEmptyLaunchBtn">Launch First Research Run</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Top Matching Funding Opportunities -->
+              <div class="card mt-4">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h3>Top Funding & Scholarship Matches</h3>
+                    <span class="badge badge-teal">High Fit Score (≥60%)</span>
+                  </div>
+                  <button type="button" class="btn btn-link btn-sm" id="ovViewAllFundingBtn">View All Opportunities →</button>
+                </div>
+                <div class="card-body">
+                  <div class="opportunities-list" id="ovTopAwardsList">
+                    <!-- Populated by JS -->
+                  </div>
+                  <div class="empty-state hidden" id="ovFundingEmptyState">
+                    <div class="empty-icon">🏆</div>
+                    <h4>No Discovered Opportunities Yet</h4>
+                    <p>Run a university research job to extract verified scholarships, fellowships, and graduate assistantships.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Top Faculty & Telemetry -->
+            <div class="overview-col-side">
+              
+              <!-- Top Faculty Matches Card -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h3>Top Faculty Matches</h3>
+                    <span class="badge badge-purple">Research Alignment</span>
+                  </div>
+                  <button type="button" class="btn btn-link btn-sm" id="ovViewAllFacultyBtn">View All Faculty →</button>
+                </div>
+                <div class="card-body">
+                  <div class="professors-list compact" id="ovTopFacultyList">
+                    <!-- Populated by JS -->
+                  </div>
+                  <div class="empty-state hidden" id="ovFacultyEmptyState">
+                    <div class="empty-icon">🔬</div>
+                    <h4>No Faculty Matches Yet</h4>
+                    <p>Run a research job with Faculty scope to discover PIs matching your research interests.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Telemetry & System Status Card -->
+              <div class="card mt-4">
+                <div class="card-header">
+                  <h3>Crawl & Token Telemetry</h3>
+                  <span class="badge badge-neutral">Actual Usage</span>
+                </div>
+                <div class="card-body">
+                  <div class="telemetry-stat-row">
+                    <span class="telemetry-label">Total LLM Tokens Consumed:</span>
+                    <strong class="telemetry-val font-mono" id="ovStatTokens">0</strong>
+                  </div>
+                  <div class="telemetry-stat-row">
+                    <span class="telemetry-label">Total AI Requests Made:</span>
+                    <strong class="telemetry-val font-mono" id="ovStatLlmReqs">0</strong>
+                  </div>
+                  <div class="telemetry-stat-row">
+                    <span class="telemetry-label">Active Candidate Profile:</span>
+                    <strong class="telemetry-val" id="ovStatProfileName">Alex Rivera (v1)</strong>
+                  </div>
+                  <div class="telemetry-stat-row">
+                    <span class="telemetry-label">Search Provider Interface:</span>
+                    <strong class="telemetry-val" id="ovStatSearchProvider">Direct URL Mode</strong>
+                  </div>
+                  <div class="telemetry-stat-row">
+                    <span class="telemetry-label">Database Storage:</span>
+                    <strong class="telemetry-val text-success">SQLite Connected (WAL Mode)</strong>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- SCREEN 2: ACADEMIC PROFILE -->
+        <!-- ============================================================ -->
+        <section id="tab-profile" class="tab-content">
+          <div class="screen-header">
+            <div>
+              <h2>Academic Profile & Candidate Credentials</h2>
+              <p class="text-muted">Manage your academic background, target degree, research interests, and funding requirements. Profile changes automatically generate audited version snapshots.</p>
+            </div>
+            <div class="header-action-buttons">
+              <button type="button" class="btn btn-secondary btn-sm" id="viewPrivacyPreviewBtn">🛡️ Data Minimization Preview</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="viewVersionHistoryBtn">📜 Version History</button>
+              <button type="button" class="btn btn-primary btn-sm" id="saveProfileBtn">💾 Save Profile Version</button>
+            </div>
+          </div>
+
+          <div class="profile-layout-grid">
+            <!-- Left Column: Profile Completeness & CV Fact Extraction -->
+            <div class="profile-side-col">
+              
+              <!-- Completeness Card -->
+              <div class="card">
+                <div class="card-header">
+                  <h3>Profile Completeness</h3>
+                  <span class="badge badge-teal" id="profileCompletenessBadge">0% Complete</span>
+                </div>
+                <div class="card-body">
+                  <div class="progress-bar-wrap mb-3">
+                    <div class="progress-bar-fill" id="profileProgressBar" style="width: 0%;"></div>
+                  </div>
+                  <ul class="completeness-checklist" id="profileChecklist">
+                    <!-- Populated by JS -->
+                  </ul>
+                </div>
+              </div>
+
+              <!-- CV Upload & Intelligent Fact Extraction Card -->
+              <div class="card mt-4">
+                <div class="card-header">
+                  <div class="card-title-group">
+                    <h3>CV / Resume Fact Extractor</h3>
+                    <span class="badge badge-neutral">PDF / DOCX</span>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <p class="text-sm text-muted mb-3">Upload your curriculum vitae. ScholarScout parses your degrees, GPA, publications, and skills into candidate facts for your review before merging.</p>
+                  
+                  <div class="cv-drop-zone" id="cvDropZone">
+                    <input type="file" id="cvFileInput" accept=".pdf,.docx" style="display: none;">
+                    <div class="drop-zone-content">
+                      <span class="upload-icon">📄</span>
+                      <strong id="cvFileNameLabel">Choose CV file or drag & drop here</strong>
+                      <span class="text-xs text-muted">Supports PDF, DOCX (max 10MB)</span>
+                    </div>
+                  </div>
+
+                  <div class="mt-3 flex-row-between">
+                    <button type="button" class="btn btn-secondary btn-sm" id="cvSelectFileBtn">Browse File</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="cvUploadAndParseBtn" disabled>⚡ Extract Facts</button>
+                  </div>
+                  <div id="cvUploadStatus" class="mt-2 text-xs"></div>
+                </div>
+              </div>
+
+              <!-- Active Profile Version Info -->
+              <div class="card mt-4">
+                <div class="card-header">
+                  <h3>Version Audit Log</h3>
+                  <span class="badge badge-primary" id="currentVersionBadge">v1 Active</span>
+                </div>
+                <div class="card-body">
+                  <p class="text-xs text-muted">Every saved update creates an immutable snapshot. Research runs link to the exact version used for matching.</p>
+                  <div id="profileVersionHistoryList" class="version-history-mini-list mt-2">
+                    <!-- Populated by JS -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Profile Form Fields -->
+            <div class="profile-main-col">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Candidate Academic Information</h3>
+                  <span class="text-xs text-muted">Required fields marked with *</span>
+                </div>
+                <div class="card-body">
+                  <form id="academicProfileForm" class="profile-form">
+                    
+                    <!-- Section A: Candidate Basics -->
+                    <div class="form-section-title">Candidate Identity & Residence</div>
+                    <div class="form-row-2">
+                      <div class="form-group">
+                        <label for="prof_name">Full Legal / Academic Name *</label>
+                        <input type="text" id="prof_name" class="form-control" required placeholder="e.g. Alex Rivera">
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_nationality">Citizenship / Nationality</label>
+                        <input type="text" id="prof_nationality" class="form-control" placeholder="e.g. German / International">
+                      </div>
+                    </div>
+
+                    <div class="form-row-2">
+                      <div class="form-group">
+                        <label for="prof_country_of_origin">Country of Origin</label>
+                        <input type="text" id="prof_country_of_origin" class="form-control" placeholder="e.g. Germany">
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_current_residence">Current Residence Country</label>
+                        <input type="text" id="prof_current_residence" class="form-control" placeholder="e.g. Germany">
+                      </div>
+                    </div>
+
+                    <!-- Section B: Academic Background -->
+                    <div class="form-section-title mt-4">Current Education & Qualifications</div>
+                    <div class="form-row-2">
+                      <div class="form-group">
+                        <label for="prof_current_degree">Current / Highest Degree</label>
+                        <input type="text" id="prof_current_degree" class="form-control" placeholder="e.g. B.S. in Computer Science">
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_current_institution">Current Institution</label>
+                        <input type="text" id="prof_current_institution" class="form-control" placeholder="e.g. Technical University of Munich">
+                      </div>
+                    </div>
+
+                    <div class="form-row-3">
+                      <div class="form-group">
+                        <label for="prof_current_major">Major / Field of Study *</label>
+                        <input type="text" id="prof_current_major" class="form-control" required placeholder="e.g. Computer Science">
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_gpa">Cumulative GPA / Scale *</label>
+                        <input type="text" id="prof_gpa" class="form-control" required placeholder="e.g. 3.92 / 4.0 or 1.2 German Scale">
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_graduation_date">Expected Graduation Date</label>
+                        <input type="text" id="prof_graduation_date" class="form-control" placeholder="e.g. June 2025">
+                      </div>
+                    </div>
+
+                    <!-- Section C: Target Ambition -->
+                    <div class="form-section-title mt-4">Target Graduate Ambition</div>
+                    <div class="form-row-3">
+                      <div class="form-group">
+                        <label for="prof_target_degree">Target Degree Level *</label>
+                        <select id="prof_target_degree" class="form-control" required>
+                          <option value="Ph.D.">Ph.D. / Doctorate</option>
+                          <option value="Master's">Master's (MS / MSc / MA)</option>
+                          <option value="Postdoctoral">Postdoctoral Fellowship</option>
+                          <option value="Bachelor's">Bachelor's / Undergraduate</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_broad_subject">Broad Subject Area *</label>
+                        <input type="text" id="prof_broad_subject" class="form-control" required placeholder="e.g. Computer Science">
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_intended_intake">Target Intake Term</label>
+                        <input type="text" id="prof_intended_intake" class="form-control" placeholder="e.g. Fall 2025 / Fall 2026">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="prof_target_field">Specific Sub-Field / Research Discipline *</label>
+                      <input type="text" id="prof_target_field" class="form-control" required placeholder="e.g. Artificial Intelligence & Multi-Agent Systems">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="prof_research_interests">Specific Research Interests (Key for Faculty Matching) *</label>
+                      <textarea id="prof_research_interests" class="form-control" rows="3" required placeholder="e.g. Large Language Models, Multi-Agent Systems, Neural Reasoning, Safe AI Alignment, Distributed Machine Learning"></textarea>
+                    </div>
+
+                    <!-- Section D: Country Preferences -->
+                    <div class="form-section-title mt-4">Geographic Preferences & Constraints</div>
+                    <div class="form-row-2">
+                      <div class="form-group">
+                        <label for="prof_preferred_countries">Preferred Destination Countries (Comma-separated)</label>
+                        <input type="text" id="prof_preferred_countries" class="form-control" placeholder="e.g. United States, United Kingdom, Canada, Germany">
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_excluded_countries">Excluded Countries (Optional)</label>
+                        <input type="text" id="prof_excluded_countries" class="form-control" placeholder="e.g. None">
+                      </div>
+                    </div>
+
+                    <!-- Section E: Standardized Tests & Credentials -->
+                    <div class="form-section-title mt-4">Credentials, Tests & Experience</div>
+                    <div class="form-row-2">
+                      <div class="form-group">
+                        <label for="prof_english_tests">English Proficiency Test Scores</label>
+                        <input type="text" id="prof_english_tests" class="form-control" placeholder="e.g. TOEFL iBT 112 (R:30, L:29, S:26, W:27) or IELTS 8.0">
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_technical_skills">Technical Skills & Methods</label>
+                        <input type="text" id="prof_technical_skills" class="form-control" placeholder="e.g. Python, PyTorch, C++, CUDA, Transformers, FastMCP">
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="prof_publications">Publications & Preprints</label>
+                      <textarea id="prof_publications" class="form-control" rows="2" placeholder="e.g. 1 workshop paper at NeurIPS LLM Agent Evaluation Workshop (2024)"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="prof_research_experience">Research Experience & Projects</label>
+                      <textarea id="prof_research_experience" class="form-control" rows="3" placeholder="e.g. Undergraduate Research Assistant in NLP Laboratory (2 years). Built benchmark suites for LLM evaluation."></textarea>
+                    </div>
+
+                    <!-- Section F: Funding Needs -->
+                    <div class="form-section-title mt-4">Funding Requirements</div>
+                    <div class="form-group">
+                      <label>Required Funding Support Elements</label>
+                      <div class="checkbox-group">
+                        <label class="checkbox-label"><input type="checkbox" id="fund_need_tuition" value="full_tuition" checked> Full Tuition Waiver / Coverage</label>
+                        <label class="checkbox-label"><input type="checkbox" id="fund_need_stipend" value="living_stipend" checked> Living Support / Monthly Stipend</label>
+                        <label class="checkbox-label"><input type="checkbox" id="fund_need_insurance" value="health_insurance" checked> Health Insurance Included</label>
+                        <label class="checkbox-label"><input type="checkbox" id="fund_need_travel" value="travel_grant"> Conference / Travel Relocation Grant</label>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="prof_funding_notes">Funding Constraints & Additional Notes</label>
+                      <input type="text" id="prof_funding_notes" class="form-control" placeholder="e.g. Seeking fully-funded GRA/GTA position or competitive university fellowship.">
+                    </div>
+
+                    <!-- Section G: Online Profiles -->
+                    <div class="form-section-title mt-4">Academic & Portfolio Links</div>
+                    <div class="form-row-3">
+                      <div class="form-group">
+                        <label for="prof_portfolio_url">Personal Website</label>
+                        <input type="url" id="prof_portfolio_url" class="form-control" placeholder="https://alexrivera.dev">
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_github_url">GitHub Profile</label>
+                        <input type="url" id="prof_github_url" class="form-control" placeholder="https://github.com/alexrivera-research">
+                      </div>
+                      <div class="form-group">
+                        <label for="prof_website_url">Google Scholar / ORCID</label>
+                        <input type="url" id="prof_website_url" class="form-control" placeholder="https://scholar.google.com/citations?user=...">
+                      </div>
+                    </div>
+
+                    <div class="form-action-bar mt-4">
+                      <span id="profileSaveStatusText" class="text-sm text-muted"></span>
+                      <button type="submit" class="btn btn-primary" id="saveProfileSubmitBtn">💾 Save Profile & Create Version Snapshot</button>
+                    </div>
+
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- SCREEN 3: RESEARCH SETUP -->
+        <!-- ============================================================ -->
+        <section id="tab-research" class="tab-content">
+          <div class="screen-header">
+            <div>
+              <h2>Target University & Autonomous Discovery Setup</h2>
+              <p class="text-muted">Launch targeted university website crawls or autonomous discovery across search providers to find official funding, assistantships, and matching faculty.</p>
+            </div>
+          </div>
+
+          <div class="card form-card">
+            <form id="researchSetupForm">
+              
+              <!-- Mode Switcher Tabs -->
+              <div class="discovery-mode-switcher" role="tablist">
+                <button type="button" class="mode-tab-btn active" id="discoveryModeBtn" role="tab" aria-selected="true">
+                  <span>✨ Autonomous Discovery Mode</span>
+                  <span class="mode-tab-badge">Search Providers</span>
+                </button>
+                <button type="button" class="mode-tab-btn" id="singleUrlModeBtn" role="tab" aria-selected="false">
+                  <span>🌐 Single University URL</span>
+                  <span class="mode-tab-badge">Direct Crawl</span>
+                </button>
+                <button type="button" class="mode-tab-btn" id="multiUrlModeBtn" role="tab" aria-selected="false">
+                  <span>📑 Batch URL Import</span>
+                  <span class="mode-tab-badge">URL List</span>
+                </button>
+              </div>
+
+              <!-- MODE 1: Autonomous Discovery Mode Container -->
+              <div id="discoveryModeGroup" class="discovery-mode-container">
+                <!-- Search Provider Status Card -->
+                <div class="provider-status-card" id="providerStatusCard">
+                  <div class="provider-info-group">
+                    <div class="provider-icon-badge" id="providerIconBadge">🔍</div>
+                    <div class="provider-text-titles">
+                      <strong id="providerDisplayTitle">Search Provider: Checking...</strong>
+                      <span id="providerDisplaySubtitle">Pluggable Search API interface for finding official university sources</span>
+                    </div>
+                  </div>
+                  <div class="provider-action-group">
+                    <span class="badge badge-primary" id="discoveryProviderBadge">Tavily Search API</span>
+                    <button type="button" class="btn btn-sm btn-secondary" id="configureSearchInSettingsBtn">⚙️ Configure in Settings</button>
+                  </div>
+                </div>
+
+                <!-- Unconfigured Provider Warning Alert -->
+                <div class="alert alert-warning hidden" id="unconfiguredProviderAlert">
+                  <div class="alert-icon">⚠️</div>
+                  <div class="alert-body">
+                    <strong>Search Provider API Key Not Configured</strong>
+                    <p>To run Autonomous Discovery, please configure an API key for <strong>Tavily Search API</strong>, <strong>SerpAPI</strong>, or <strong>Brave Search</strong> in Settings. Alternatively, switch to <strong>Single University URL</strong> or <strong>Batch URL Import</strong> mode to crawl universities directly without an external search API.</p>
+                  </div>
+                </div>
+
+                <!-- Profile Parameters Summary Pill -->
+                <div class="profile-summary-bar">
+                  <span class="profile-summary-title">🎓 Student Profile Parameters Active:</span>
+                  <span class="profile-pill-item" id="discProfDegree">Degree: Ph.D.</span>
+                  <span class="profile-pill-item" id="discProfSubject">Subject: Computer Science</span>
+                  <span class="profile-pill-item" id="discProfCountries">Countries: US, UK, CA, DE</span>
+                  <span class="profile-pill-item" id="discProfIntake">Intake: Fall 2025</span>
+                </div>
+
+                <!-- Discovery Controls Form -->
+                <div class="discovery-controls-grid">
+                  <div class="form-group">
+                    <label for="customKeywordsInput">Focus Topics / Custom Keywords (Optional)</label>
+                    <input type="text" id="customKeywordsInput" class="form-control" placeholder="e.g. Generative AI, Robotics Lab, Fully Funded Assistantship">
+                    <span class="form-hint">Additional keywords will be infused into focused university discovery queries.</span>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="maxQueriesInput">Max Discovery Queries</label>
+                      <input type="number" id="maxQueriesInput" class="form-control" min="1" max="15" value="5">
+                      <span class="form-hint">Precision search queries to execute across provider.</span>
+                    </div>
+                    <div class="form-group">
+                      <label for="maxDiscoveryUniversitiesInput">Max Institutions to Discover</label>
+                      <input type="number" id="maxDiscoveryUniversitiesInput" class="form-control" min="1" max="50" value="10">
+                      <span class="form-hint">Official university portals to catalog for verification.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Query Review Action Bar -->
+                <div class="query-actions-bar">
+                  <button type="button" class="btn btn-secondary" id="generateQueriesBtn">
+                    <span>✨ Generate & Review Focused Queries</span>
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="previewLeadsBtn" disabled>
+                    <span>🔍 Preview Leads (Search Test)</span>
+                  </button>
+                  <button type="button" class="btn btn-primary" id="startDiscoveryJobBtn">
+                    <span>🚀 Launch Autonomous Discovery Run</span>
+                  </button>
+                </div>
+
+                <!-- Generated Queries Container -->
+                <div id="generatedQueriesContainer" class="generated-queries-box hidden">
+                  <div class="generated-queries-header">
+                    <h4>Precision Search Queries Generated from Profile</h4>
+                    <span class="badge badge-teal" id="queriesCountBadge">5 queries</span>
+                  </div>
+                  <div id="queriesList" class="queries-list">
+                    <!-- Populated by JS -->
+                  </div>
+                </div>
+
+                <!-- Search Leads Preview Container -->
+                <div id="leadsPreviewContainer" class="leads-preview-box hidden">
+                  <div class="leads-preview-header">
+                    <h4>Discovered University Domains & Official Leads</h4>
+                    <span class="badge badge-primary" id="leadsCountBadge">0 leads</span>
+                  </div>
+                  <div class="table-responsive mt-2">
+                    <table class="data-table" id="leadsPreviewTable">
+                      <thead>
+                        <tr>
+                          <th>Institution / Name</th>
+                          <th>Domain</th>
+                          <th>Country</th>
+                          <th>Discovered Via Query</th>
+                          <th>Lead URL</th>
+                        </tr>
+                      </thead>
+                      <tbody id="leadsPreviewTableBody">
+                        <!-- Populated by JS -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MODE 2: Single University URL Group -->
+              <div id="singleUrlGroup" class="url-mode-container hidden">
+                <div class="form-group">
+                  <label for="targetUniversityUrl">Target University or Department Website URL *</label>
+                  <input type="url" id="targetUniversityUrl" class="form-control font-mono" placeholder="https://cs.cmu.edu or https://ox.ac.uk">
+                  <span class="form-hint">Enter the official university root domain or specific academic department page.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="targetUniversityName">University Name (Optional)</label>
+                  <input type="text" id="targetUniversityName" class="form-control" placeholder="e.g. Carnegie Mellon University">
+                  <span class="form-hint">If left empty, ScholarScout will automatically resolve the official institution name.</span>
+                </div>
+              </div>
+
+              <!-- MODE 3: Batch URL Import Group -->
+              <div id="multiUrlGroup" class="multi-url-container hidden">
+                <div class="form-group">
+                  <label for="batchUniversityUrls">Batch University URLs (One per line or comma-separated) *</label>
+                  <textarea id="batchUniversityUrls" class="form-control font-mono" rows="5" placeholder="https://cs.cmu.edu&#10;https://cs.stanford.edu&#10;https://www.cs.ox.ac.uk&#10;https://in.tum.de"></textarea>
+                  <span class="form-hint">ScholarScout will enqueue sequential, respectful research runs for each institution.</span>
+                </div>
+              </div>
+
+              <!-- Shared Scope & Crawl Controls for URL Modes -->
+              <div id="crawlScopeControls" class="crawl-scope-box hidden">
+                <div class="form-section-title">Research Scope & Extraction Depth</div>
+                
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label for="researchScopeSelect">Research Scope Focus</label>
+                    <select id="researchScopeSelect" class="form-control">
+                      <option value="all">Comprehensive (Funding, Faculty & Admissions)</option>
+                      <option value="funding">Funding, Scholarships & Assistantships Only</option>
+                      <option value="faculty">Faculty Directories & PIs Only</option>
+                      <option value="admissions_programs">Admissions Requirements & Degree Programs</option>
+                      <option value="positions">Funded Lab Positions & Openings</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="maxPagesPerUniv">Max Pages to Crawl</label>
+                    <input type="number" id="maxPagesPerUniv" class="form-control" min="3" max="50" value="15">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="crawlTimeLimit">Crawl Time Limit (Seconds)</label>
+                    <input type="number" id="crawlTimeLimit" class="form-control" min="30" max="300" value="120">
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <button type="button" class="btn btn-primary" id="launchUrlResearchBtn">
+                    <span>🚀 Launch University Research Run</span>
+                  </button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- SCREEN 4: RESEARCH JOBS -->
+        <!-- ============================================================ -->
+        <section id="tab-jobs" class="tab-content">
+          <div class="screen-header">
+            <div>
+              <h2>Research Jobs & Queue Monitor</h2>
+              <p class="text-muted">Real-time status of all autonomous discovery runs and university crawls. Monitor live page visits, token consumption, and institutional coverage.</p>
+            </div>
+            <div class="header-action-buttons">
+              <button type="button" class="btn btn-secondary btn-sm" id="jobsRefreshBtn">🔄 Refresh Queue</button>
+              <button type="button" class="btn btn-primary btn-sm" id="jobsNewRunBtn">🚀 New Run</button>
+            </div>
+          </div>
+
+          <!-- Jobs Filter & Search Bar -->
+          <div class="filter-bar-card">
+            <div class="filter-row">
+              <div class="filter-group flex-1">
+                <label for="jobSearchInput">Search Jobs</label>
+                <input type="text" id="jobSearchInput" class="form-control" placeholder="Search by university name, URL, or provider...">
+              </div>
+              <div class="filter-group">
+                <label for="jobStatusFilter">Status</label>
+                <select id="jobStatusFilter" class="form-control">
+                  <option value="all">All Statuses</option>
+                  <option value="running">Running</option>
+                  <option value="queued">Queued</option>
+                  <option value="completed">Completed</option>
+                  <option value="failed">Failed</option>
+                  <option value="paused">Paused</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="jobTypeFilter">Job Type</label>
+                <select id="jobTypeFilter" class="form-control">
+                  <option value="all">All Types</option>
+                  <option value="url_research">University Crawl</option>
+                  <option value="discovery_job">Autonomous Discovery</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Research Jobs Table -->
+          <div class="card mt-3">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="data-table" id="allJobsTable">
+                  <thead>
+                    <tr>
+                      <th>Job ID</th>
+                      <th>Target Institution / Discovery</th>
+                      <th>Type & Scope</th>
+                      <th>Profile</th>
+                      <th>Status & Progress</th>
+                      <th>Pages</th>
+                      <th>Awards</th>
+                      <th>Faculty</th>
+                      <th>Tokens</th>
+                      <th>Created</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="allJobsTableBody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="empty-state hidden" id="jobsEmptyState">
+                <div class="empty-icon">📋</div>
+                <h4>No Research Jobs Found</h4>
+                <p>No jobs match the selected filters. Start a new university crawl or discovery run.</p>
+                <button type="button" class="btn btn-primary btn-sm" id="jobsEmptyStartBtn">Start Research Run</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- SCREEN 5: UNIVERSITIES -->
+        <!-- ============================================================ -->
+        <section id="tab-universities" class="tab-content">
+          <div class="screen-header">
+            <div>
+              <h2>Global Universities & Real-Time Directory</h2>
+              <p class="text-muted">Explore research institutions worldwide. Filter by country, explore random global samples, launch 1-click crawls, bookmark, manage personal notes, or add custom universities in real time.</p>
+            </div>
+            <div class="header-action-buttons">
+              <button type="button" class="btn btn-teal btn-sm" id="shuffleUnivsBtn" title="Show a diverse random sample of universities across all world countries">🎲 Shuffle Random Sample</button>
+              <button type="button" class="btn btn-primary btn-sm" id="openAddUnivModalBtn">➕ Add University</button>
+              <div class="export-group">
+                <button type="button" class="btn-export" id="exportUnivCsvBtn" title="Export Tracked Universities as CSV (Formula Injection Protected)">📥 Export CSV</button>
+                <button type="button" class="btn-export" id="exportUnivJsonBtn" title="Export Tracked Universities as JSON">📥 Export JSON</button>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="universitiesRefreshBtn">🔄 Refresh</button>
+            </div>
+          </div>
+
+          <!-- Interactive Country Explorer Ribbon -->
+          <div class="country-ribbon-card card mb-3">
+            <div class="country-ribbon-header flex-row-between">
+              <span class="text-xs font-semibold text-muted">🌍 QUICK COUNTRY EXPLORER (CLICK ANY COUNTRY FOR INSTANT UNIVERSITIES):</span>
+              <span class="text-xs text-teal font-mono" id="activeCountryDisplayLabel">Showing: All Countries (Global Blend)</span>
+            </div>
+            <div class="country-ribbon" id="countryPillsRibbon">
+              <button type="button" class="country-pill active" data-country="all">
+                <span class="country-pill-flag">🌐</span>
+                <span class="country-pill-name">All Countries</span>
+              </button>
+              <button type="button" class="country-pill" data-country="random">
+                <span class="country-pill-flag">🎲</span>
+                <span class="country-pill-name">Random Sample</span>
+              </button>
+              <button type="button" class="country-pill" data-country="United States">
+                <span class="country-pill-flag">🇺🇸</span>
+                <span class="country-pill-name">United States</span>
+              </button>
+              <button type="button" class="country-pill" data-country="United Kingdom">
+                <span class="country-pill-flag">🇬🇧</span>
+                <span class="country-pill-name">United Kingdom</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Canada">
+                <span class="country-pill-flag">🇨🇦</span>
+                <span class="country-pill-name">Canada</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Germany">
+                <span class="country-pill-flag">🇩🇪</span>
+                <span class="country-pill-name">Germany</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Australia">
+                <span class="country-pill-flag">🇦🇺</span>
+                <span class="country-pill-name">Australia</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Switzerland">
+                <span class="country-pill-flag">🇨🇭</span>
+                <span class="country-pill-name">Switzerland</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Singapore">
+                <span class="country-pill-flag">🇸🇬</span>
+                <span class="country-pill-name">Singapore</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Japan">
+                <span class="country-pill-flag">🇯🇵</span>
+                <span class="country-pill-name">Japan</span>
+              </button>
+              <button type="button" class="country-pill" data-country="France">
+                <span class="country-pill-flag">🇫🇷</span>
+                <span class="country-pill-name">France</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Netherlands">
+                <span class="country-pill-flag">🇳🇱</span>
+                <span class="country-pill-name">Netherlands</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Sweden">
+                <span class="country-pill-flag">🇸🇪</span>
+                <span class="country-pill-name">Sweden</span>
+              </button>
+              <button type="button" class="country-pill" data-country="India">
+                <span class="country-pill-flag">🇮🇳</span>
+                <span class="country-pill-name">India</span>
+              </button>
+              <button type="button" class="country-pill" data-country="South Korea">
+                <span class="country-pill-flag">🇰🇷</span>
+                <span class="country-pill-name">South Korea</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Saudi Arabia">
+                <span class="country-pill-flag">🇸🇦</span>
+                <span class="country-pill-name">Saudi Arabia</span>
+              </button>
+              <button type="button" class="country-pill" data-country="United Arab Emirates">
+                <span class="country-pill-flag">🇦🇪</span>
+                <span class="country-pill-name">UAE</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Pakistan">
+                <span class="country-pill-flag">🇵🇰</span>
+                <span class="country-pill-name">Pakistan</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Brazil">
+                <span class="country-pill-flag">🇧🇷</span>
+                <span class="country-pill-name">Brazil</span>
+              </button>
+              <button type="button" class="country-pill" data-country="South Africa">
+                <span class="country-pill-flag">🇿🇦</span>
+                <span class="country-pill-name">South Africa</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Mexico">
+                <span class="country-pill-flag">🇲🇽</span>
+                <span class="country-pill-name">Mexico</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Turkey">
+                <span class="country-pill-flag">🇹🇷</span>
+                <span class="country-pill-name">Turkey</span>
+              </button>
+              <button type="button" class="country-pill" data-country="Egypt">
+                <span class="country-pill-flag">🇪🇬</span>
+                <span class="country-pill-name">Egypt</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Universities Filter Bar -->
+          <div class="filter-bar-card">
+            <div class="filter-row">
+              <div class="filter-group flex-1">
+                <label for="univSearchInput">Search Universities</label>
+                <input type="text" id="univSearchInput" class="form-control" placeholder="Search by institution name, domain, country, or notes...">
+              </div>
+              <div class="filter-group">
+                <label for="univCountryFilter">Country Dropdown</label>
+                <select id="univCountryFilter" class="form-control">
+                  <option value="all">🌐 All Countries</option>
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="univSortBy">Sort By</label>
+                <select id="univSortBy" class="form-control">
+                  <option value="name">Institution Name (A-Z)</option>
+                  <option value="random">🎲 Random Global Sample</option>
+                  <option value="country">Country Name (A-Z)</option>
+                  <option value="scholarships">Most Funding Awards</option>
+                  <option value="professors">Most Matching Faculty</option>
+                  <option value="pages">Most Pages Crawled</option>
+                  <option value="recent">Recently Checked</option>
+                </select>
+              </div>
+              <div class="filter-group checkbox-filter">
+                <label class="checkbox-label mt-4">
+                  <input type="checkbox" id="univShortlistedOnly"> ⭐ Shortlisted Only
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Universities Table / Cards -->
+          <div class="card mt-3">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="data-table" id="universitiesTable">
+                  <thead>
+                    <tr>
+                      <th>Shortlist</th>
+                      <th>University Name & Domain</th>
+                      <th>Country</th>
+                      <th>Crawled Pages</th>
+                      <th>Funding Awards</th>
+                      <th>Faculty Matches</th>
+                      <th>Last Checked</th>
+                      <th>Personal Notes</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="universitiesTableBody">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination Controls -->
+              <div class="pagination-bar" id="univPaginationBar">
+                <span class="pagination-info" id="univPaginationInfo">Showing 0 of 0 universities</span>
+                <div class="pagination-buttons">
+                  <button type="button" class="btn btn-sm btn-secondary" id="univPrevPageBtn" disabled>← Previous</button>
+                  <span class="pagination-page-num" id="univPageNum">Page 1</span>
+                  <button type="button" class="btn btn-sm btn-secondary" id="univNextPageBtn" disabled>Next →</button>
+                </div>
+              </div>
+
+              <div class="empty-state hidden" id="univEmptyState">
+                <div class="empty-icon">🏛️</div>
+                <h4>No Tracked Universities Found</h4>
+                <p>No universities match your search or filter criteria. Run an autonomous discovery or university crawl to populate the directory.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- SCREEN 6: FUNDING OPPORTUNITIES -->
+        <!-- ============================================================ -->
+        <section id="tab-scholarships" class="tab-content">
+          <div class="screen-header">
+            <div>
+              <h2>Funding Opportunities, Grants & Assistantships</h2>
+              <p class="text-muted">Official scholarships, fellowships, tuition waivers, and graduate research/teaching assistantships (GRA/GTA) discovered from university web sources.</p>
+            </div>
+            <div class="header-action-buttons">
+              <div class="export-group">
+                <button type="button" class="btn-export" id="exportFundingCsvBtn" title="Export Opportunities as CSV (Formula Injection Protected)">📥 Export CSV</button>
+                <button type="button" class="btn-export" id="exportFundingJsonBtn" title="Export Opportunities as JSON">📥 Export JSON</button>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="fundingRefreshBtn">🔄 Refresh</button>
+            </div>
+          </div>
+
+          <!-- Funding Filter Bar -->
+          <div class="filter-bar-card">
+            <div class="filter-row">
+              <div class="filter-group flex-1">
+                <label for="fundingSearchInput">Search Funding</label>
+                <input type="text" id="fundingSearchInput" class="form-control" placeholder="Search by scholarship title, university, department, or keyword...">
+              </div>
+              <div class="filter-group">
+                <label for="fundingMinFitScore">Min Fit Score</label>
+                <select id="fundingMinFitScore" class="form-control">
+                  <option value="0">All Scores (0%+)</option>
+                  <option value="60">Good Match (60%+)</option>
+                  <option value="80" selected>High Fit (80%+)</option>
+                  <option value="90">Top Match (90%+)</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="fundingCategoryFilter">Funding Type</label>
+                <select id="fundingCategoryFilter" class="form-control">
+                  <option value="all">All Categories</option>
+                  <option value="Explicit full tuition plus living support">Full Tuition + Living Support</option>
+                  <option value="Tuition-only support">Tuition-Only Support</option>
+                  <option value="Partial funding">Partial Funding</option>
+                  <option value="Conditional assistantship">Conditional Assistantship (GRA/GTA)</option>
+                  <option value="Unclear funding">Unclear / Needs Inquiry</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="fundingEligibilityFilter">Eligibility Status</label>
+                <select id="fundingEligibilityFilter" class="form-control">
+                  <option value="all">All Eligibility</option>
+                  <option value="Appears eligible">Appears Eligible</option>
+                  <option value="Needs clarification">Needs Clarification</option>
+                  <option value="Appears ineligible">Appears Ineligible</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="filter-row mt-2">
+              <div class="filter-group">
+                <label for="fundingCountryFilter">Country</label>
+                <select id="fundingCountryFilter" class="form-control">
+                  <option value="all">All Countries</option>
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="fundingDegreeLevelFilter">Degree Level</label>
+                <select id="fundingDegreeLevelFilter" class="form-control">
+                  <option value="all">All Degree Levels</option>
+                  <option value="Ph.D.">Ph.D. / Doctorate</option>
+                  <option value="Master's">Master's</option>
+                  <option value="Postdoctoral">Postdoctoral</option>
+                  <option value="Bachelor's">Bachelor's</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="fundingSortBy">Sort By</label>
+                <select id="fundingSortBy" class="form-control">
+                  <option value="fit_score">Fit Score (High to Low)</option>
+                  <option value="deadline">Upcoming Deadline</option>
+                  <option value="university">University Name</option>
+                  <option value="title">Award Title</option>
+                  <option value="recent">Recently Discovered</option>
+                </select>
+              </div>
+              <div class="filter-group checkbox-filter">
+                <label class="checkbox-label mt-4">
+                  <input type="checkbox" id="fundingShortlistedOnly"> ⭐ Shortlisted Only
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Funding Opportunities List / Cards -->
+          <div class="card mt-3">
+            <div class="card-body p-0">
+              <div class="scholarships-catalog" id="scholarshipsCatalogList">
+                <!-- Populated by JS -->
+              </div>
+
+              <!-- Pagination Controls -->
+              <div class="pagination-bar" id="fundingPaginationBar">
+                <span class="pagination-info" id="fundingPaginationInfo">Showing 0 of 0 opportunities</span>
+                <div class="pagination-buttons">
+                  <button type="button" class="btn btn-sm btn-secondary" id="fundingPrevPageBtn" disabled>← Previous</button>
+                  <span class="pagination-page-num" id="fundingPageNum">Page 1</span>
+                  <button type="button" class="btn btn-sm btn-secondary" id="fundingNextPageBtn" disabled>Next →</button>
+                </div>
+              </div>
+
+              <div class="empty-state hidden" id="fundingCatalogEmptyState">
+                <div class="empty-icon">🏆</div>
+                <h4>No Funding Opportunities Found</h4>
+                <p>No scholarships or assistantships match your current filters. Try lowering the minimum fit score or clearing search terms.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- SCREEN 7: PROFESSORS -->
+        <!-- ============================================================ -->
+        <section id="tab-professors" class="tab-content">
+          <div class="screen-header">
+            <div>
+              <h2>Faculty Members & Principal Investigators</h2>
+              <p class="text-muted">Discovered professors matched against your research interests with explainable heuristic score breakdowns, verified emails, and recruitment status.</p>
+            </div>
+            <div class="header-action-buttons">
+              <div class="export-group">
+                <button type="button" class="btn-export" id="exportProfCsvBtn" title="Export Faculty Leads as CSV (Formula Injection Protected)">📥 Export CSV</button>
+                <button type="button" class="btn-export" id="exportProfJsonBtn" title="Export Faculty Leads as JSON">📥 Export JSON</button>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="professorsRefreshBtn">🔄 Refresh</button>
+            </div>
+          </div>
+
+          <!-- Professors Filter Bar -->
+          <div class="filter-bar-card">
+            <div class="filter-row">
+              <div class="filter-group flex-1">
+                <label for="profSearchInput">Search Faculty</label>
+                <input type="text" id="profSearchInput" class="form-control" placeholder="Search by professor name, research topic, lab group, or department...">
+              </div>
+              <div class="filter-group">
+                <label for="profMinMatchScore">Min Match Score</label>
+                <select id="profMinMatchScore" class="form-control">
+                  <option value="0">All Scores (0%+)</option>
+                  <option value="60">Good Alignment (60%+)</option>
+                  <option value="80" selected>High Alignment (80%+)</option>
+                  <option value="90">Top PI Match (90%+)</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="profRecruitmentFilter">Recruitment Status</label>
+                <select id="profRecruitmentFilter" class="form-control">
+                  <option value="all">All Recruitment Statuses</option>
+                  <option value="actively recruiting">Actively Recruiting</option>
+                  <option value="likely accepting">Likely Accepting</option>
+                  <option value="unstated">Unstated in Source</option>
+                  <option value="not accepting">Not Accepting</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="profEmailFilter">Verified Email</label>
+                <select id="profEmailFilter" class="form-control">
+                  <option value="all">All Faculty</option>
+                  <option value="has_email">Verified Academic Email Only</option>
+                  <option value="no_email">Email Not Found in Source</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="filter-row mt-2">
+              <div class="filter-group flex-1">
+                <label for="profDepartmentFilter">Department</label>
+                <input type="text" id="profDepartmentFilter" class="form-control" placeholder="Filter by department (e.g. Computer Science)...">
+              </div>
+              <div class="filter-group">
+                <label for="profSortBy">Sort By</label>
+                <select id="profSortBy" class="form-control">
+                  <option value="match_score">Match Score (High to Low)</option>
+                  <option value="name">Professor Name (A-Z)</option>
+                  <option value="department">Department</option>
+                  <option value="university">University</option>
+                  <option value="recent">Recently Discovered</option>
+                </select>
+              </div>
+              <div class="filter-group checkbox-filter">
+                <label class="checkbox-label mt-4">
+                  <input type="checkbox" id="profShortlistedOnly"> ⭐ Shortlisted Only
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Professors Catalog Cards -->
+          <div class="card mt-3">
+            <div class="card-body p-0">
+              <div class="professors-catalog" id="professorsCatalogList">
+                <!-- Populated by JS -->
+              </div>
+
+              <!-- Pagination Controls -->
+              <div class="pagination-bar" id="profPaginationBar">
+                <span class="pagination-info" id="profPaginationInfo">Showing 0 of 0 faculty members</span>
+                <div class="pagination-buttons">
+                  <button type="button" class="btn btn-sm btn-secondary" id="profPrevPageBtn" disabled>← Previous</button>
+                  <span class="pagination-page-num" id="profPageNum">Page 1</span>
+                  <button type="button" class="btn btn-sm btn-secondary" id="profNextPageBtn" disabled>Next →</button>
+                </div>
+              </div>
+
+              <div class="empty-state hidden" id="professorsCatalogEmptyState">
+                <div class="empty-icon">🔬</div>
+                <h4>No Faculty Matches Found</h4>
+                <p>No faculty members match your filter criteria. Try lowering the match score or searching for broader keywords.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- SCREEN 8: SHORTLIST -->
+        <!-- ============================================================ -->
+        <section id="tab-shortlist" class="tab-content">
+          <div class="screen-header">
+            <div>
+              <h2>Shortlisted Targets & Application Workspace</h2>
+              <p class="text-muted">Consolidated workspace of your bookmarked universities, funding opportunities, and matching professors. Add private notes and export for your application tracker.</p>
+            </div>
+            <div class="header-action-buttons">
+              <button type="button" class="btn btn-secondary btn-sm" id="exportShortlistMdBtn">📥 Export Markdown</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="exportShortlistJsonBtn">📥 Export JSON</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="shortlistRefreshBtn">🔄 Refresh</button>
+            </div>
+          </div>
+
+          <!-- Shortlist Sub-Tabs -->
+          <div class="sub-tab-bar" role="tablist">
+            <button type="button" class="sub-tab-btn active" id="slTabAllBtn" role="tab" aria-selected="true">
+              All Shortlisted (<span id="slCountAll">0</span>)
+            </button>
+            <button type="button" class="sub-tab-btn" id="slTabUnivBtn" role="tab" aria-selected="false">
+              Universities (<span id="slCountUniv">0</span>)
+            </button>
+            <button type="button" class="sub-tab-btn" id="slTabAwardsBtn" role="tab" aria-selected="false">
+              Funding Opportunities (<span id="slCountAwards">0</span>)
+            </button>
+            <button type="button" class="sub-tab-btn" id="slTabFacultyBtn" role="tab" aria-selected="false">
+              Faculty / PIs (<span id="slCountFaculty">0</span>)
+            </button>
+          </div>
+
+          <!-- Shortlist Content Containers -->
+          <div class="shortlist-content-wrap mt-3">
+            
+            <!-- Universities Shortlist Container -->
+            <div class="card mb-4" id="slUnivSection">
+              <div class="card-header">
+                <h3>Shortlisted Universities</h3>
+                <span class="badge badge-navy" id="slUnivCountBadge">0 bookmarked</span>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>University Name & Domain</th>
+                        <th>Country</th>
+                        <th>Awards</th>
+                        <th>Faculty</th>
+                        <th>Personal Notes</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="slUnivTableBody">
+                      <!-- Populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Funding Opportunities Shortlist Container -->
+            <div class="card mb-4" id="slAwardsSection">
+              <div class="card-header">
+                <h3>Shortlisted Funding Opportunities</h3>
+                <span class="badge badge-teal" id="slAwardsCountBadge">0 bookmarked</span>
+              </div>
+              <div class="card-body p-0">
+                <div class="scholarships-catalog p-3" id="slAwardsList">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Faculty Shortlist Container -->
+            <div class="card mb-4" id="slFacultySection">
+              <div class="card-header">
+                <h3>Shortlisted Faculty & Mentors</h3>
+                <span class="badge badge-purple" id="slFacultyCountBadge">0 bookmarked</span>
+              </div>
+              <div class="card-body p-0">
+                <div class="professors-catalog p-3" id="slFacultyList">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Universal Shortlist Empty State -->
+            <div class="empty-state hidden" id="slUniversalEmptyState">
+              <div class="empty-icon">⭐</div>
+              <h4>Your Shortlist is Empty</h4>
+              <p>Bookmark high-priority universities, funding awards, and faculty members by clicking the ⭐ star icon across ScholarScout.</p>
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- SCREEN 9: OUTREACH & CONTROLLED EMAIL SENDING WORKSPACE -->
+        <!-- ============================================================ -->
+        <section id="tab-drafts" class="tab-content">
+          <div class="screen-header">
+            <div>
+              <h2>Outreach Email Workspace & Controlled Sending</h2>
+              <p class="text-muted">Evidence-grounded professor outreach inquiries with version-locked approvals, duplicate protection, durable outbound queue, and zero-risk mock sandbox testing.</p>
+            </div>
+            <div class="header-action-buttons">
+              <div class="export-group">
+                <button type="button" class="btn-export" id="exportOutreachCsvBtn" title="Export Outreach & Queue as CSV (Formula Injection Protected)">📥 Export CSV</button>
+                <button type="button" class="btn-export" id="exportOutreachJsonBtn" title="Export Outreach & Queue as JSON">📥 Export JSON</button>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="toggleOutreachSettingsBtn">⚙️ Outreach Instructions</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="syncRepliesHeaderBtn">⚡ Sync Provider Replies</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="openBatchDraftModalBtn">✨ Batch Draft for Faculty</button>
+              <button type="button" class="btn btn-primary btn-sm" id="createNewDraftBtn">➕ New Custom Draft</button>
+            </div>
+          </div>
+
+          <!-- Master Sending Status & Connected Account Control Banner -->
+          <div class="sending-banner safety-mode" id="masterSendingBanner">
+            <div class="sending-banner-left">
+              <div class="sending-status-icon" id="sendingStatusIcon">🛡️</div>
+              <div>
+                <div class="sending-banner-title" id="sendingBannerTitle">Sending Status: SAFETY MODE (Outbound Dispatch Disabled)</div>
+                <div class="sending-banner-desc" id="sendingBannerDesc">Messages remain safely in draft or queued state until an account is connected and you explicitly enable controlled sending.</div>
+              </div>
+            </div>
+            <div class="sending-banner-controls">
+              <div class="account-picker-group">
+                <label for="activeAccountSelect" class="text-xs text-muted">Active Account:</label>
+                <select id="activeAccountSelect" class="form-control form-control-sm" style="min-width: 220px;">
+                  <option value="1">Mock Sandbox (Safe Offline Testing)</option>
+                </select>
+              </div>
+              <button type="button" class="btn btn-sm btn-secondary" id="toggleMasterSendingBtn">⚡ Enable Sending</button>
+            </div>
+          </div>
+
+          <!-- Workspace Sub-View Tabs Navigation -->
+          <div class="workspace-subviews-bar">
+            <div class="subviews-tab-list" role="tablist">
+              <button type="button" class="subview-tab-btn active" data-subview="viewDraftsEditor" role="tab" aria-selected="true">
+                <span>✉️ Email Drafts & Live Editor</span>
+                <span class="subview-tab-badge" id="subviewDraftsBadge">0</span>
+              </button>
+              <button type="button" class="subview-tab-btn" data-subview="viewOutboundQueue" role="tab" aria-selected="false">
+                <span>📬 Durable Outbound Queue</span>
+                <span class="subview-tab-badge" id="subviewQueueBadge">0</span>
+              </button>
+              <button type="button" class="subview-tab-btn" data-subview="viewDoNotContact" role="tab" aria-selected="false">
+                <span>🚫 Do-Not-Contact List</span>
+                <span class="subview-tab-badge" id="subviewDncBadge">0</span>
+              </button>
+              <button type="button" class="subview-tab-btn" data-subview="viewAuditLogs" role="tab" aria-selected="false">
+                <span>📜 Outbound Audit Log</span>
+                <span class="subview-tab-badge" id="subviewAuditBadge">0</span>
+              </button>
+            </div>
+            <div class="subviews-actions">
+              <button type="button" class="btn btn-secondary btn-xs" id="refreshCurrentWorkspaceViewBtn">🔄 Refresh View</button>
+            </div>
+          </div>
+
+          <!-- Collapsible Outreach Instructions & Template Settings Card -->
+          <div class="card mb-3 hidden" id="outreachSettingsPanel">
+            <div class="card-header flex-row-between">
+              <div class="card-title-group">
+                <h3>📝 Editable Outreach Instructions & Template Settings</h3>
+                <span class="badge badge-teal">Saved & Active</span>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="hideOutreachSettingsBtn">Close Settings</button>
+            </div>
+            <div class="card-body">
+              <form id="outreachSettingsForm">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="setting_purpose">1. Purpose of Contacting Professor *</label>
+                    <input type="text" id="setting_purpose" class="form-control" placeholder="e.g. PhD Advisorship & Research Assistantship Inquiry" required>
+                    <span class="form-hint">E.g., Prospective PhD Advisorship, Funded RA/TA, Postdoc Opportunity, Thesis Supervision.</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="setting_degree_intake">2. Target Degree & Intake *</label>
+                    <input type="text" id="setting_degree_intake" class="form-control" placeholder="e.g. Ph.D. in Computer Science (Fall 2026)" required>
+                    <span class="form-hint">Target degree level, field of study, and starting intake semester.</span>
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="setting_tone_length">3. Tone & Maximum Length *</label>
+                    <input type="text" id="setting_tone_length" class="form-control" placeholder="e.g. Professional, concise, scholarly; strictly under 200 words" required>
+                    <span class="form-hint">Specifies academic tone and strict length boundaries.</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="setting_specific_request">4. Specific Request / Call to Action *</label>
+                    <input type="text" id="setting_specific_request" class="form-control" placeholder="e.g. Request a brief 15-minute introductory video call to discuss research synergy" required>
+                    <span class="form-hint">Direct, actionable question (e.g. call request, recruitment availability inquiry).</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="setting_background_emphasis">5. Background Details to Emphasize</label>
+                  <textarea id="setting_background_emphasis" class="form-control" rows="2" placeholder="e.g. Strong foundation in AI/ML research, 3.95 GPA, hands-on PyTorch engineering, and published work in NLP."></textarea>
+                  <span class="form-hint">Specific verified projects, GPA, technical skills, or papers to highlight.</span>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="setting_attachments">6. Proposed Attachments</label>
+                    <input type="text" id="setting_attachments" class="form-control" placeholder="e.g. Academic CV (PDF), Unofficial Transcript, 1-page Research Summary">
+                    <span class="form-hint">Comma-separated list of attachments referenced in the message.</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="setting_wording_preferences">7. Optional Wording Preferences & Constraints</label>
+                    <textarea id="setting_wording_preferences" class="form-control" rows="2" placeholder="e.g. Focus on neuro-symbolic reasoning; avoid generic flattery; never assume funding is guaranteed."></textarea>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="setting_signature">8. Signature Block *</label>
+                  <textarea id="setting_signature" class="form-control font-mono" rows="3" placeholder="Sincerely,&#10;[Candidate Name]&#10;Applicant, Graduate Research&#10;Email: candidate@alumni.univ.edu&#10;Portfolio: https://github.com/candidate"></textarea>
+                </div>
+
+                <div class="form-action-bar mt-2 flex-row-between">
+                  <button type="button" class="btn btn-secondary btn-sm" id="resetOutreachSettingsBtn">🔄 Reset to Defaults</button>
+                  <button type="button" class="btn btn-primary btn-sm" id="saveOutreachSettingsBtn">💾 Save Outreach Instructions</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 1: Drafts Directory & Live Editor (Dual Column) -->
+          <div class="workspace-subview-container" id="viewDraftsEditor">
+            <div class="workspace-grid">
+              
+              <!-- Left Column: Drafts Directory & Filters -->
+              <div class="workspace-list-column">
+                <div class="workspace-search-bar">
+                  <input type="text" id="draftSearchInput" class="form-control form-control-sm" placeholder="🔍 Search drafts by name, email, university...">
+                </div>
+
+                <!-- Batch Approval Action Toolbar -->
+                <div class="batch-approval-bar flex-row-between mb-2 p-2 bg-subtle rounded" id="draftBatchBar">
+                  <div class="flex-row-between gap-2 align-center">
+                    <input type="checkbox" id="selectAllDraftsCheckbox" title="Select all drafts">
+                    <span class="text-xs text-muted">Selected: <strong id="selectedDraftsCount">0</strong></span>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-xs" id="batchApproveSelectedBtn" disabled>✅ Approve Selected Versions</button>
+                </div>
+
+                <div class="status-filter-pills" id="draftStatusFilterPills">
+                  <button type="button" class="status-pill-btn active" data-status="all">All (<span id="countDraftsAll">0</span>)</button>
+                  <button type="button" class="status-pill-btn" data-status="draft">Draft (<span id="countDraftsDraft">0</span>)</button>
+                  <button type="button" class="status-pill-btn" data-status="approved">✅ Approved (<span id="countDraftsApproved">0</span>)</button>
+                  <button type="button" class="status-pill-btn" data-status="queued">📬 Queued (<span id="countDraftsQueued">0</span>)</button>
+                  <button type="button" class="status-pill-btn" data-status="provider-accepted">🚀 Accepted (<span id="countDraftsAccepted">0</span>)</button>
+                  <button type="button" class="status-pill-btn" data-status="uncertain">⚠️ Uncertain (<span id="countDraftsUncertain">0</span>)</button>
+                </div>
+
+                <div class="drafts-cards-container" id="workspaceDraftsList">
+                  <!-- Populated by JS -->
+                </div>
+
+                <div class="empty-state hidden" id="workspaceDraftsEmpty">
+                  <div class="empty-icon">✉️</div>
+                  <h5>No Outreach Drafts Found</h5>
+                  <p class="text-xs text-muted">Generate drafts from the Professors or Shortlist screen, or create a custom draft.</p>
+                  <button type="button" class="btn btn-primary btn-xs mt-2" id="emptyWorkspaceCreateBtn">➕ Create Draft</button>
+                </div>
+              </div>
+
+              <!-- Right Column: Live Editor & Evidence Inspector -->
+              <div class="workspace-editor-column" id="workspaceEditorPane">
+                
+                <!-- Placeholder when no draft is selected -->
+                <div class="editor-unselected-state" id="editorUnselectedState">
+                  <div class="unselected-icon">👈</div>
+                  <h4>Select a Draft to Inspect & Edit</h4>
+                  <p class="text-sm text-muted">Choose an outreach email from the list on the left to review its grounded evidence citations, audit claims, edit text, approve exact version, or dispatch to queue.</p>
+                </div>
+
+                <!-- Active Editor Container -->
+                <div class="editor-content-container hidden" id="editorActiveContent">
+                  
+                  <!-- Recipient Info & Approval Version Card -->
+                  <div class="editor-header-card">
+                    <div class="flex-row-between align-center">
+                      <div>
+                        <div class="editor-recipient-name" id="editorRecipientName">Dr. William Cohen</div>
+                        <div class="editor-recipient-subtitle" id="editorRecipientSubtitle">Language Technologies Institute, Carnegie Mellon University</div>
+                      </div>
+                      <div class="editor-status-badge-wrap flex-row-between gap-2 align-center">
+                        <span class="hash-pill" id="editorHashPill" title="Cryptographic SHA256 content version hash">SHA256: -</span>
+                        <span class="badge badge-teal" id="editorStatusBadge">Draft</span>
+                      </div>
+                    </div>
+
+                    <div class="recipient-contact-line mt-2 flex-row-between">
+                      <div>
+                        <span class="text-xs text-muted">Recipient Email:</span>
+                        <strong class="font-mono text-xs" id="editorRecipientEmail">wcohen@cs.cmu.edu</strong>
+                        <button type="button" class="btn btn-secondary btn-xs ml-1" id="copyEmailAddrBtn" title="Copy email address">📋 Copy</button>
+                        <a href="#" id="editorMailtoLink" class="btn btn-secondary btn-xs ml-1" target="_blank">✉️ Open in Mail Client</a>
+                      </div>
+                      <div class="approval-invalidation-notice text-xs text-muted">
+                        🔒 <em>Edits to recipient, subject, body, or attachments invalidate prior approval.</em>
+                      </div>
+                    </div>
+
+                    <!-- Dynamic Policy Notice / Warning Banner -->
+                    <div class="policy-alert-banner mt-2" id="editorPolicyAlert">
+                      <!-- Populated by JS -->
+                    </div>
+                  </div>
+
+                  <!-- Main Form Editor -->
+                  <div class="editor-form-card mt-3">
+                    <div class="form-group">
+                      <label for="editorSubjectInput"><strong>Subject Line *</strong></label>
+                      <input type="text" id="editorSubjectInput" class="form-control font-semibold" placeholder="Prospective Ph.D. Inquiry...">
+                    </div>
+
+                    <div class="form-group">
+                      <div class="flex-row-between align-center mb-1">
+                        <label for="editorBodyInput"><strong>Email Message Body *</strong></label>
+                        <div class="word-counter-wrap">
+                          <span id="editorWordCount" class="text-xs font-semibold">0 / 200 words</span>
+                          <span id="editorCharCount" class="text-xs text-muted ml-2">(0 chars)</span>
+                        </div>
+                      </div>
+                      <textarea id="editorBodyInput" class="form-control font-sans" rows="12" placeholder="Dear Professor..."></textarea>
+                    </div>
+
+                    <!-- Proposed Attachments Manager -->
+                    <div class="form-group">
+                      <label><strong>Proposed & Validated Attachments</strong> <span class="text-xs text-muted">(PDF, Word, Images supported • Max 10MB/file • Executables strictly blocked)</span></label>
+                      <div class="attachments-tag-container" id="editorAttachmentsContainer">
+                        <!-- Rendered as chips by JS -->
+                      </div>
+                      <div class="input-with-button mt-1" style="max-width: 420px;">
+                        <input type="text" id="newAttachmentInput" class="form-control form-control-sm" placeholder="Add attachment (e.g. Academic_CV.pdf)">
+                        <button type="button" class="btn btn-secondary btn-sm" id="addAttachmentBtn">+ Add</button>
+                      </div>
+                    </div>
+
+                    <!-- Generation Metadata Bar -->
+                    <div class="editor-meta-bar mt-2">
+                      <span class="meta-item">🎓 Profile: <strong id="editorProfileVersion">v1</strong></span>
+                      <span class="meta-item">📅 Generated: <span id="editorGeneratedDate">-</span></span>
+                      <span class="meta-item">🆔 Draft ID: #<span id="editorDraftId">-</span></span>
+                      <span class="meta-item" id="editorApprovedAtMeta"></span>
+                    </div>
+                  </div>
+
+                  <!-- Side-by-Side Grounded Evidence Inspector -->
+                  <div class="evidence-inspector-card mt-3" id="editorEvidenceCard">
+                    <div class="evidence-header flex-row-between">
+                      <h4>🔍 Grounded Evidence Citations (Used in Synthesis)</h4>
+                      <span class="text-xs text-muted">Internal evidence only — excluded from outgoing email</span>
+                    </div>
+                    <div class="evidence-grid" id="editorEvidenceGrid">
+                      <!-- Populated by JS -->
+                    </div>
+                  </div>
+
+                  <!-- Editor Action Toolbar with Controlled Sending Controls -->
+                  <div class="editor-action-toolbar mt-3 flex-row-between">
+                    <div class="action-group-left">
+                      <button type="button" class="btn btn-danger btn-sm" id="deleteCurrentDraftBtn">🗑️ Delete Draft</button>
+                    </div>
+                    <div class="action-group-right flex-row-between gap-2">
+                      <button type="button" class="btn btn-secondary btn-sm" id="copyCurrentDraftBtn">📋 Copy Message</button>
+                      <button type="button" class="btn btn-secondary btn-sm" id="exportCurrentEmlBtn">📥 Export .eml</button>
+                      <button type="button" class="btn btn-secondary btn-sm" id="saveCurrentDraftBtn">💾 Save Changes</button>
+                      <button type="button" class="btn btn-teal btn-sm" id="editorApproveBtn">✅ Approve Exact Version</button>
+                      <button type="button" class="btn btn-primary btn-sm" id="editorPreSendInspectBtn">🔍 Pre-Send Review & Queue</button>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 2: Durable Outbound Queue -->
+          <div class="workspace-subview-container hidden" id="viewOutboundQueue">
+            <div class="card">
+              <div class="card-header flex-row-between">
+                <div>
+                  <h3>📬 Durable Outbound Dispatch Queue</h3>
+                  <p class="text-xs text-muted mb-0">Messages are queued upon approval and dispatched sequentially according to account rate limits and provider quotas. Provider acceptance does not equate to confirmed recipient delivery.</p>
+                </div>
+                <div class="flex-row-between gap-2">
+                  <button type="button" class="btn btn-secondary btn-sm" id="refreshQueueBtn">🔄 Refresh Queue</button>
+                  <button type="button" class="btn btn-primary btn-sm" id="processQueueBatchBtn">🚀 Process Next Batch</button>
+                </div>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="data-table" id="outboundQueueTable">
+                    <thead>
+                      <tr>
+                        <th>Queue #</th>
+                        <th>Recipient</th>
+                        <th>Subject</th>
+                        <th>Account</th>
+                        <th>Content Hash</th>
+                        <th>Status</th>
+                        <th>Attempts</th>
+                        <th>Provider Msg ID</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="outboundQueueTableBody">
+                      <!-- Populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 3: Do-Not-Contact Suppression List -->
+          <div class="workspace-subview-container hidden" id="viewDoNotContact">
+            <div class="card mb-3">
+              <div class="card-header">
+                <h3>🚫 Add Suppression Rule</h3>
+              </div>
+              <div class="card-body">
+                <form id="addDncForm" class="flex-row-between gap-3 align-end">
+                  <div class="form-group flex-1 mb-0">
+                    <label for="dncPatternInput">Email Address or Domain Pattern *</label>
+                    <input type="text" id="dncPatternInput" class="form-control font-mono form-control-sm" placeholder="e.g. professor@cmu.edu or @harvard.edu" required>
+                    <span class="form-hint">Use exact email address or '@domain.edu' for domain-wide suppression.</span>
+                  </div>
+                  <div class="form-group flex-1 mb-0">
+                    <label for="dncReasonInput">Suppression Reason</label>
+                    <input type="text" id="dncReasonInput" class="form-control form-control-sm" placeholder="e.g. Faculty opted out / No cold emails policy">
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-sm" style="white-space: nowrap;">➕ Add to Suppression List</button>
+                </form>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3>Active Suppression Patterns (<span id="dncListCount">0</span>)</h3>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="data-table" id="dncTable">
+                    <thead>
+                      <tr>
+                        <th>Pattern / Email</th>
+                        <th>Reason</th>
+                        <th>Source</th>
+                        <th>Added Date</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dncTableBody">
+                      <!-- Populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 4: Audit Log & Delivery History -->
+          <div class="workspace-subview-container hidden" id="viewAuditLogs">
+            <div class="card">
+              <div class="card-header flex-row-between">
+                <div>
+                  <h3>📜 Outbound Sending Audit Log</h3>
+                  <p class="text-xs text-muted mb-0">Immutable record of all approval changes, queue dispatches, provider acceptance responses, timeouts, and reply detections.</p>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="refreshAuditLogBtn">🔄 Refresh Logs</button>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="data-table" id="auditLogTable">
+                    <thead>
+                      <tr>
+                        <th>Timestamp</th>
+                        <th>Action</th>
+                        <th>Recipient</th>
+                        <th>Account</th>
+                        <th>Provider Msg ID</th>
+                        <th>Details</th>
+                      </tr>
+                    </thead>
+                    <tbody id="auditLogTableBody">
+                      <!-- Populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+
+        <!-- ============================================================ -->
+        <!-- SCREEN 10: SETTINGS -->
+        <!-- ============================================================ -->
+        <section id="tab-settings" class="tab-content">
+          <div class="screen-header">
+            <div>
+              <h2>Application & Provider Settings</h2>
+              <p class="text-muted">Configure your LLM reasoning provider, Autonomous Discovery search interface, and crawl safety parameters. All credentials are saved strictly on the backend.</p>
+            </div>
+            <div class="header-action-buttons">
+              <button type="button" class="btn btn-primary btn-sm" id="saveAllSettingsBtn">💾 Save All Settings</button>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            
+            <!-- Section 1: AI Reasoning Engine Settings -->
+            <!-- Section 1: AI Reasoning Engine Settings (NVIDIA Multi-Key & Models) -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3>NVIDIA AI Provider & Multi-Key Pool</h3>
+                  <span class="badge badge-teal" id="settingsAiStatusBadge">NVIDIA NIM Active</span>
+                </div>
+                <span class="badge badge-purple" id="settingsKeyPoolCountBadge">1 Active Key</span>
+              </div>
+              <div class="card-body">
+                <form id="settingsAiForm">
+                  <div class="form-group">
+                    <label for="setting_api_base_url">API Base URL *</label>
+                    <input type="url" id="setting_api_base_url" class="form-control font-mono" placeholder="https://integrate.api.nvidia.com/v1 or https://api.openai.com/v1">
+                    <span class="form-hint">NVIDIA NIM (https://integrate.api.nvidia.com/v1), OpenAI, or local Ollama endpoint.</span>
+                  </div>
+
+                  <!-- Multi-Key Input -->
+                  <div class="form-group">
+                    <div class="flex-row-between align-center mb-1">
+                      <label for="setting_api_keys"><strong>NVIDIA API Keys Pool (Multi-Key Support) *</strong></label>
+                      <span class="text-xs text-muted" id="settingsKeysCounterText">1 key configured</span>
+                    </div>
+                    <textarea id="setting_api_keys" class="form-control font-mono" rows="3" placeholder="nvapi-key1...&#10;nvapi-key2...&#10;nvapi-key3...&#10;(Enter multiple keys, one per line or separated by commas for round-robin rotation & rate-limit failover)"></textarea>
+                    <span class="form-hint">Paste all your NVIDIA API keys here. The agent will automatically balance requests and failover on rate limits.</span>
+                  </div>
+
+                  <!-- Model Catalog Dropdown -->
+                  <div class="form-group">
+                    <label for="setting_model_select"><strong>NVIDIA Model Selection *</strong></label>
+                    <select id="setting_model_select" class="form-control font-medium">
+                      <optgroup label="🌟 Flagship & High Accuracy Models">
+                        <option value="nvidia/llama-3.1-nemotron-70b-instruct" selected>nvidia/llama-3.1-nemotron-70b-instruct (Nemotron 70B - Recommended)</option>
+                        <option value="meta/llama-3.3-70b-instruct">meta/llama-3.3-70b-instruct (Llama 3.3 70B - High Reasoning)</option>
+                        <option value="meta/llama-3.1-70b-instruct">meta/llama-3.1-70b-instruct (Llama 3.1 70B - High Accuracy)</option>
+                        <option value="deepseek-ai/deepseek-r1">deepseek-ai/deepseek-r1 (DeepSeek R1 - Advanced Reasoning)</option>
+                        <option value="qwen/qwen2.5-72b-instruct">qwen/qwen2.5-72b-instruct (Qwen 2.5 72B - Multilingual)</option>
+                        <option value="mistralai/mistral-large-2-instruct">mistralai/mistral-large-2-instruct (Mistral Large 2 123B)</option>
+                      </optgroup>
+                      <optgroup label="⚡ Fast & High-Throughput Models">
+                        <option value="meta/llama-3.1-8b-instruct">meta/llama-3.1-8b-instruct (Llama 3.1 8B - Ultra Fast Scraping)</option>
+                        <option value="mistralai/mixtral-8x7b-instruct-v0.1">mistralai/mixtral-8x7b-instruct-v0.1 (Mixtral 8x7B MoE)</option>
+                      </optgroup>
+                      <optgroup label="🏢 Heavyweight & Enterprise">
+                        <option value="nvidia/nemotron-4-340b-instruct">nvidia/nemotron-4-340b-instruct (Nemotron 4 340B)</option>
+                      </optgroup>
+                      <option value="custom">✏️ Enter Custom Model Identifier...</option>
+                    </select>
+                  </div>
+
+                  <!-- Custom Model Input (shown if custom selected) -->
+                  <div class="form-group hidden" id="customModelInputGroup">
+                    <label for="setting_model_name">Custom Model Identifier *</label>
+                    <input type="text" id="setting_model_name" class="form-control font-mono" placeholder="e.g. nvidia/llama-3.1-nemotron-70b-instruct or gpt-4o">
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="setting_llm_timeout">Request Timeout (Seconds)</label>
+                      <input type="number" id="setting_llm_timeout" class="form-control" min="5" max="120" value="45">
+                    </div>
+                    <div class="form-group">
+                      <label for="setting_llm_max_concurrency">Max LLM Concurrency</label>
+                      <input type="number" id="setting_llm_max_concurrency" class="form-control" min="1" max="10" value="4">
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label for="setting_job_max_llm_requests">Max Requests Per Job</label>
+                      <input type="number" id="setting_job_max_llm_requests" class="form-control" min="1" max="100" value="35">
+                    </div>
+                    <div class="form-group">
+                      <label for="setting_job_max_llm_tokens">Max Tokens Budget Per Job</label>
+                      <input type="number" id="setting_job_max_llm_tokens" class="form-control" min="1000" max="300000" value="100000">
+                    </div>
+                  </div>
+
+                  <div class="form-action-bar mt-3 flex-row-between">
+                    <div class="flex-row-between gap-2">
+                      <button type="button" class="btn btn-secondary btn-sm" id="testAiConnectionBtn">⚡ Test Active Model</button>
+                      <button type="button" class="btn btn-secondary btn-sm" id="testAllKeysBtn">🔑 Test All Keys in Pool</button>
+                    </div>
+                    <span id="aiTestResultStatus" class="text-xs"></span>
+                  </div>
+                  <div id="aiTestDetailsBox" class="diagnostics-box mt-2 hidden"></div>
+                  <div id="allKeysTestResultsBox" class="diagnostics-box mt-2 hidden"></div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Section 2: Autonomous Discovery Search Provider Settings -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3>Pluggable Search API (Autonomous Discovery)</h3>
+                  <span class="badge badge-primary" id="settingsSearchStatusBadge">Tavily Active</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <form id="settingsSearchForm">
+                  <div class="form-group">
+                    <label for="setting_search_provider">Search Provider Interface *</label>
+                    <select id="setting_search_provider" class="form-control">
+                      <option value="tavily">Tavily Search API (Recommended for Research Agents)</option>
+                      <option value="serpapi">SerpAPI (Google Search)</option>
+                      <option value="brave">Brave Search API</option>
+                      <option value="null">Disabled / Direct University URL Mode Only</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="setting_search_api_key">Search API Key</label>
+                    <div class="input-with-button">
+                      <input type="password" id="setting_search_api_key" class="form-control font-mono" placeholder="tvly-... or serpapi key or brave token">
+                      <button type="button" class="btn btn-secondary btn-sm" id="toggleSearchApiKeyVisibilityBtn">Show</button>
+                    </div>
+                    <span class="form-hint">Stored securely on the backend server. Leave unchanged to retain existing key.</span>
+                  </div>
+
+                  <div class="form-row-3">
+                    <div class="form-group">
+                      <label for="setting_search_max_queries">Max Queries Per Run</label>
+                      <input type="number" id="setting_search_max_queries" class="form-control" min="1" max="15" value="5">
+                    </div>
+                    <div class="form-group">
+                      <label for="setting_search_max_results">Results Per Query</label>
+                      <input type="number" id="setting_search_max_results" class="form-control" min="1" max="20" value="8">
+                    </div>
+                    <div class="form-group">
+                      <label for="setting_discovery_max_universities">Max Discovered Universities</label>
+                      <input type="number" id="setting_discovery_max_universities" class="form-control" min="1" max="50" value="10">
+                    </div>
+                  </div>
+
+                  <div class="form-action-bar mt-3">
+                    <button type="button" class="btn btn-secondary" id="testSearchCredentialsBtn">🔍 Test Search Provider Credentials</button>
+                    <span id="searchTestResultStatus" class="text-xs"></span>
+                  </div>
+                  <div id="searchTestDetailsBox" class="diagnostics-box mt-2 hidden"></div>
+
+                  <!-- Provider Setup Guides Accordion -->
+                  <div class="setup-guide-box mt-3">
+                    <details>
+                      <summary>📖 How to get a free Search Provider API Key</summary>
+                      <div class="guide-content text-xs mt-2">
+                        <div class="provider-guide-item mb-2">
+                          <strong>1. Tavily Search API (1,000 free credits/mo):</strong>
+                          <p>Sign up at <a href="https://tavily.com" target="_blank" rel="noopener">tavily.com</a>, copy your API key from the dashboard, select "Tavily" above, paste the key, and save.</p>
+                        </div>
+                        <div class="provider-guide-item mb-2">
+                          <strong>2. SerpAPI (100 free Google searches/mo):</strong>
+                          <p>Register at <a href="https://serpapi.com" target="_blank" rel="noopener">serpapi.com</a>, copy your private key, select "SerpAPI", paste, and save.</p>
+                        </div>
+                        <div class="provider-guide-item">
+                          <strong>3. Brave Search API (2,000 free queries/mo):</strong>
+                          <p>Sign up at <a href="https://brave.com/search/api/" target="_blank" rel="noopener">brave.com/search/api</a>, generate a Web Search subscription token, and paste above.</p>
+                        </div>
+                      </div>
+                    </details>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Section 3: Crawl Safety & Rate Limits -->
+            <div class="card">
+              <div class="card-header">
+                <h3>Crawl Safety, Limits & Timeout Safeguards</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="setting_crawl_max_pages">Default Max Pages Per Crawl</label>
+                    <input type="number" id="setting_crawl_max_pages" class="form-control" min="3" max="50" value="15">
+                    <span class="form-hint">Prevents excessive server load on target university domains.</span>
+                  </div>
+                  <div class="form-group">
+                    <label>Extraction Safeguards</label>
+                    <div class="static-badge-list mt-2">
+                      <span class="badge badge-neutral">Robots.txt Adherence</span>
+                      <span class="badge badge-neutral">Playwright Fallback Active</span>
+                      <span class="badge badge-neutral">PDF Text Extraction</span>
+                      <span class="badge badge-neutral">Page Content Hash Deduplication</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 4: Scheduled Rechecks for Shortlisted Opportunities -->
+            <div class="card">
+              <div class="card-header flex-row-between">
+                <div>
+                  <h3>🔄 Scheduled Rechecks for Shortlisted Opportunities</h3>
+                  <p class="text-sm text-muted">Automatically monitors deadlines, funding terms, recruitment status, and PI contact details.</p>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="runDueRechecksBtn">⚡ Run Due Rechecks Now</button>
+              </div>
+              <div class="card-body">
+                <div class="rechecks-banner">
+                  📢 <strong>Local Schedule Disclosure:</strong> Local scheduled rechecks only run while the ScholarScout application and computer are active. Missed runs while offline are automatically caught up in a single controlled run upon startup without launching duplicate runaway jobs.
+                </div>
+
+                <div class="flex-row-between mb-3 align-center">
+                  <div class="flex-row-between gap-2 align-center">
+                    <label for="newRecheckFreqSelect" class="text-xs text-muted">Default Frequency for New Rechecks:</label>
+                    <select id="newRecheckFreqSelect" class="form-control form-control-sm" style="width: 140px;">
+                      <option value="daily">Daily</option>
+                      <option value="weekly" selected>Weekly</option>
+                      <option value="monthly">Monthly</option>
+                    </select>
+                  </div>
+                  <button type="button" class="btn btn-primary btn-xs" id="scheduleAllShortlistedBtn">⭐ Schedule All Shortlisted Items</button>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="data-table rechecks-table" id="rechecksTable">
+                    <thead>
+                      <tr>
+                        <th>Target Opportunity / PI</th>
+                        <th>Type</th>
+                        <th>Frequency</th>
+                        <th>Status</th>
+                        <th>Last Checked</th>
+                        <th>Next Due Run</th>
+                        <th>Enabled</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rechecksTableBody">
+                      <!-- Populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 5: Database Backups & Safe Rollback Restore -->
+            <div class="card">
+              <div class="card-header flex-row-between">
+                <div>
+                  <h3>💾 Database Backup & Safe Restore</h3>
+                  <p class="text-sm text-muted">Create zero-downtime hot snapshots of your research findings, faculty matches, notes, and evidence history.</p>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" id="createDbBackupBtn">➕ Create New Backup</button>
+              </div>
+              <div class="card-body">
+                <div class="alert alert-info py-2 mb-3">
+                  <span class="text-xs">🛡️ <strong>Pre-Restore Safety Snapshot:</strong> Before any backup is restored, an automatic safety snapshot of the active database is saved so you can rollback if needed.</span>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="data-table" id="dbBackupsTable">
+                    <thead>
+                      <tr>
+                        <th>Backup Filename</th>
+                        <th>Created Date</th>
+                        <th>Size</th>
+                        <th>Integrity</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dbBackupsTableBody">
+                      <!-- Populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 6: System Information & Redacted Diagnostics Export -->
+            <div class="card">
+              <div class="card-header flex-row-between">
+                <div>
+                  <h3>🛡️ System Information & Redacted Diagnostics</h3>
+                  <p class="text-sm text-muted">System telemetry, database engine status, and zero-credential diagnostic export.</p>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" id="downloadDiagnosticsBtn">📥 Download Redacted Diagnostics (JSON)</button>
+              </div>
+              <div class="card-body">
+                <div class="alert alert-success py-2 mb-3">
+                  <span class="text-xs">🔒 <strong>Zero-Credential Guarantee:</strong> Diagnostic bundles strictly scrub and redact all API keys, OAuth tokens, email credentials, and private passwords before export.</span>
+                </div>
+                <div class="system-info-grid">
+                  <div class="sys-item">
+                    <span class="sys-label">App Name:</span>
+                    <strong class="sys-val">ScholarScout v1.0.0</strong>
+                  </div>
+                  <div class="sys-item">
+                    <span class="sys-label">Server OS / Platform:</span>
+                    <strong class="sys-val" id="sysPlatform">Windows</strong>
+                  </div>
+                  <div class="sys-item">
+                    <span class="sys-label">Database Engine:</span>
+                    <strong class="sys-val">SQLite 3 (WAL Mode, Thread-Safe)</strong>
+                  </div>
+                  <div class="sys-item">
+                    <span class="sys-label">Security Architecture:</span>
+                    <strong class="sys-val text-success">Backend-Secured Credentials</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODALS -->
+    <!-- ============================================================ -->
+
+    <!-- 1. Universal Personal Notes Modal -->
+    <div class="modal-backdrop hidden" id="notesModalBackdrop">
+      <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="notesModalTitle">
+        <div class="modal-header">
+          <h3 id="notesModalTitle">📝 Personal Application Notes</h3>
+          <button type="button" class="modal-close-btn" id="closeNotesModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="text-sm text-muted mb-2" id="notesModalSubtitle">Private notes for this item:</p>
+          <div class="form-group">
+            <textarea id="notesModalTextarea" class="form-control" rows="6" placeholder="Write your application deadlines, faculty contact notes, essay requirements, or reminders here..."></textarea>
+          </div>
+          <input type="hidden" id="notesModalItemType">
+          <input type="hidden" id="notesModalItemId">
+        </div>
+        <div class="modal-footer">
+          <span id="notesModalSaveStatus" class="text-xs text-muted"></span>
+          <button type="button" class="btn btn-secondary btn-sm" id="cancelNotesModalBtn">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm" id="saveNotesModalBtn">💾 Save Notes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Evidence Citation Inspector Modal -->
+    <div class="modal-backdrop hidden" id="evidenceModalBackdrop">
+      <div class="modal-dialog modal-lg" role="dialog" aria-modal="true" aria-labelledby="evidenceModalTitle">
+        <div class="modal-header">
+          <h3 id="evidenceModalTitle">🔍 Verified Source Evidence & Citations</h3>
+          <button type="button" class="modal-close-btn" id="closeEvidenceModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="evidence-meta-box mb-3">
+            <div id="evidenceItemTitle" class="evidence-header-title">Item Title</div>
+            <div id="evidenceItemSource" class="evidence-source-url font-mono text-xs">https://...</div>
+          </div>
+          
+          <div class="form-section-title">Verbatim Source Citation Snippet</div>
+          <blockquote class="verbatim-evidence-box" id="evidenceVerbatimQuote">
+            "Loading citation..."
+          </blockquote>
+
+          <div class="form-section-title mt-3">Structured Evidence Claims</div>
+          <div id="evidenceClaimsList" class="evidence-claims-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <a href="#" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" id="evidenceOpenSourceBtn">🌐 Open Official Webpage ↗</a>
+          <button type="button" class="btn btn-primary btn-sm" id="dismissEvidenceModalBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Institutional Coverage Report Modal -->
+    <div class="modal-backdrop hidden" id="coverageModalBackdrop">
+      <div class="modal-dialog modal-lg" role="dialog" aria-modal="true" aria-labelledby="coverageModalTitle">
+        <div class="modal-header">
+          <h3 id="coverageModalTitle">📊 Institutional Coverage & Provenance Report</h3>
+          <button type="button" class="modal-close-btn" id="closeCoverageModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="coverage-summary-bar mb-3" id="coverageSummaryBar">
+            <!-- Populated by JS -->
+          </div>
+          <div id="coverageReportContent">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-sm" id="dismissCoverageModalBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Crawled Pages Activity Log Modal -->
+    <div class="modal-backdrop hidden" id="crawlPagesModalBackdrop">
+      <div class="modal-dialog modal-xl" role="dialog" aria-modal="true" aria-labelledby="crawlPagesModalTitle">
+        <div class="modal-header">
+          <h3 id="crawlPagesModalTitle">📑 Crawled Webpages Activity Log</h3>
+          <button type="button" class="modal-close-btn" id="closeCrawlPagesModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="data-table" id="crawlPagesTable">
+              <thead>
+                <tr>
+                  <th>URL</th>
+                  <th>Page Title</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>HTTP Code</th>
+                  <th>Method</th>
+                  <th>Selection Reason</th>
+                </tr>
+              </thead>
+              <tbody id="crawlPagesTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-sm" id="dismissCrawlPagesModalBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Outreach Email Editor Modal -->
+    <div class="modal-backdrop hidden" id="emailDraftModalBackdrop">
+      <div class="modal-dialog modal-lg" role="dialog" aria-modal="true" aria-labelledby="emailDraftModalTitle">
+        <div class="modal-header">
+          <h3 id="emailDraftModalTitle">✉️ Outreach Email Draft Editor</h3>
+          <button type="button" class="modal-close-btn" id="closeEmailDraftModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-info py-2 mb-3">
+            <span class="text-xs">🛡️ <strong>Sending Disabled:</strong> Review, edit, copy, and send this draft from your official student email client.</span>
+          </div>
+
+          <form id="emailDraftForm">
+            <input type="hidden" id="draft_id">
+            <input type="hidden" id="draft_job_id">
+            <input type="hidden" id="draft_professor_id">
+            <input type="hidden" id="draft_scholarship_id">
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="draft_recipient_name">Recipient Name *</label>
+                <input type="text" id="draft_recipient_name" class="form-control" required placeholder="e.g. Dr. Sarah Chen">
+              </div>
+              <div class="form-group">
+                <label for="draft_recipient_email">Recipient Email *</label>
+                <input type="email" id="draft_recipient_email" class="form-control font-mono" required placeholder="e.g. schen@cs.cmu.edu">
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="draft_recipient_role">Recipient Role</label>
+                <input type="text" id="draft_recipient_role" class="form-control" value="Faculty / PI">
+              </div>
+              <div class="form-group">
+                <label for="draft_type">Draft Type</label>
+                <select id="draft_type" class="form-control">
+                  <option value="Professor Research Inquiry">Professor Research Inquiry</option>
+                  <option value="Scholarship Funding Inquiry">Scholarship Funding Inquiry</option>
+                  <option value="Graduate Coordinator Inquiry">Graduate Coordinator Inquiry</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="draft_context_title">Research Context / Award Title</label>
+              <input type="text" id="draft_context_title" class="form-control" placeholder="e.g. Ph.D. Research in Multi-Agent Systems">
+            </div>
+
+            <div class="form-group">
+              <label for="draft_context_details">Key Alignment Details for AI Generation</label>
+              <textarea id="draft_context_details" class="form-control" rows="2" placeholder="e.g. Shared interest in neural reasoning, experience in PyTorch and benchmark suites."></textarea>
+            </div>
+
+            <div class="flex-row-between mb-2">
+              <button type="button" class="btn btn-secondary btn-sm" id="generateAiDraftBtn">⚡ Generate / Regenerate with AI</button>
+              <span id="aiDraftGenStatus" class="text-xs text-muted"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="draft_subject">Email Subject Line *</label>
+              <input type="text" id="draft_subject" class="form-control font-semibold" required placeholder="Prospective Ph.D. Student Inquiry - Alex Rivera">
+            </div>
+
+            <div class="form-group">
+              <label for="draft_body_text">Email Body Text *</label>
+              <textarea id="draft_body_text" class="form-control font-sans" rows="10" required></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer flex-row-between">
+          <div>
+            <button type="button" class="btn btn-secondary btn-sm" id="copyDraftBtn">📋 Copy to Clipboard</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="downloadEmlBtn">📥 Download .eml</button>
+          </div>
+          <div>
+            <button type="button" class="btn btn-secondary btn-sm" id="cancelDraftBtn">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" id="saveDraftBtn">💾 Save Draft</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. CV Fact Extraction Review & Merge Modal -->
+    <div class="modal-backdrop hidden" id="cvExtractModalBackdrop">
+      <div class="modal-dialog modal-lg" role="dialog" aria-modal="true" aria-labelledby="cvExtractModalTitle">
+        <div class="modal-header">
+          <h3 id="cvExtractModalTitle">📄 Review Extracted CV Facts Before Merging</h3>
+          <button type="button" class="modal-close-btn" id="closeCvExtractModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="text-sm text-muted mb-3">ScholarScout extracted the following candidate facts from your uploaded CV. Select which facts you wish to merge into your active academic profile.</p>
+          
+          <div id="cvExtractedFactsContent">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" id="cancelCvMergeBtn">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm" id="confirmCvMergeBtn">✅ Merge Selected Facts into Profile</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Profile Privacy & Data Minimization Preview Modal -->
+    <div class="modal-backdrop hidden" id="privacyModalBackdrop">
+      <div class="modal-dialog modal-lg" role="dialog" aria-modal="true" aria-labelledby="privacyModalTitle">
+        <div class="modal-header">
+          <h3 id="privacyModalTitle">🛡️ AI Privacy & Data Minimization Preview</h3>
+          <button type="button" class="modal-close-btn" id="closePrivacyModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="text-sm text-muted mb-3">To protect your privacy, ScholarScout strictly enforces task-specific data minimization. Below is the exact subset of candidate profile fields transmitted to the AI provider for each task:</p>
+          
+          <div class="privacy-tasks-wrap" id="privacyTasksContent">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-sm" id="dismissPrivacyModalBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Batch Draft Generation Modal -->
+    <div class="modal-backdrop hidden" id="batchDraftModalBackdrop">
+      <div class="modal-dialog modal-xl" role="dialog" aria-modal="true" aria-labelledby="batchDraftModalTitle">
+        <div class="modal-header">
+          <h3 id="batchDraftModalTitle">✨ Batch Generate Outreach Inquiries for Faculty</h3>
+          <button type="button" class="modal-close-btn" id="closeBatchDraftModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-info py-2 mb-3">
+            <span class="text-xs">ScholarScout creates a separate, customized draft for each selected professor using strictly their verified lab facts, recruitment context, and your active outreach instructions.</span>
+          </div>
+
+          <div class="flex-row-between align-center mb-2">
+            <div class="batch-filter-actions">
+              <button type="button" class="btn btn-secondary btn-xs" id="batchSelectAllBtn">Select All</button>
+              <button type="button" class="btn btn-secondary btn-xs" id="batchDeselectAllBtn">Deselect All</button>
+              <button type="button" class="btn btn-secondary btn-xs" id="batchSelectShortlistedBtn">⭐ Shortlisted Only</button>
+            </div>
+            <div class="text-xs text-muted">
+              Selected: <strong id="batchSelectedCount">0</strong> faculty member(s)
+            </div>
+          </div>
+
+          <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+            <table class="data-table" id="batchProfessorsTable">
+              <thead>
+                <tr>
+                  <th style="width: 40px;"><input type="checkbox" id="batchMasterCheckbox" aria-label="Select all rows"></th>
+                  <th>Faculty Member</th>
+                  <th>Institution & Dept</th>
+                  <th>Verified Research Focus</th>
+                  <th>Recruitment & Policy</th>
+                </tr>
+              </thead>
+              <tbody id="batchProfessorsTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <div id="batchGenProgressBox" class="mt-3 hidden">
+            <div class="progress-bar-wrap mb-1">
+              <div class="progress-bar-fill" id="batchGenProgressBar" style="width: 0%;"></div>
+            </div>
+            <div class="text-xs text-muted" id="batchGenProgressText">Generating drafts...</div>
+          </div>
+        </div>
+        <div class="modal-footer flex-row-between">
+          <button type="button" class="btn btn-secondary btn-sm" id="cancelBatchDraftBtn">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm" id="confirmBatchDraftBtn">✨ Generate Drafts for Selected (<span id="batchConfirmCount">0</span>)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Evidence History & Diff Timeline Modal -->
+    <div class="modal-backdrop hidden" id="evidenceHistoryModalBackdrop">
+      <div class="modal-dialog modal-lg" role="dialog" aria-modal="true" aria-labelledby="evidenceHistoryModalTitle">
+        <div class="modal-header">
+          <h3 id="evidenceHistoryModalTitle">📜 Tracked Evidence History & Change Log</h3>
+          <button type="button" class="modal-close-btn" id="closeEvidenceHistoryModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="evidence-meta-box mb-3">
+            <div id="historyTargetTitle" class="evidence-header-title">Item History</div>
+            <div id="historyTargetMeta" class="text-xs text-muted">Tracking changes in deadlines, funding terms, recruitment, and contact info while preserving previous evidence.</div>
+          </div>
+
+          <div id="evidenceHistoryTimelineContent" class="timeline-diff-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-sm" id="dismissEvidenceHistoryModalBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. Database Restore Confirmation Modal -->
+    <div class="modal-backdrop hidden" id="dbRestoreModalBackdrop">
+      <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="dbRestoreModalTitle">
+        <div class="modal-header">
+          <h3 id="dbRestoreModalTitle">⚠️ Confirm Database Restore</h3>
+          <button type="button" class="modal-close-btn" id="closeDbRestoreModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="text-sm mb-3">Are you sure you want to restore the database from backup: <strong id="restoreTargetFilename" class="font-mono text-teal"></strong>?</p>
+          <div class="alert alert-warning py-2 mb-2">
+            <span class="text-xs">🛡️ <strong>Safety Snapshot:</strong> ScholarScout will automatically create a pre-restore backup of your active database before restoring.</span>
+          </div>
+          <input type="hidden" id="restoreTargetFilenameInput">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" id="cancelDbRestoreBtn">Cancel</button>
+          <button type="button" class="btn btn-danger btn-sm" id="confirmDbRestoreBtn">🔄 Restore Database</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. Add / Edit Custom University Modal -->
+    <div class="modal-backdrop hidden" id="univModalBackdrop">
+      <div class="modal-dialog modal-md" role="dialog" aria-modal="true" aria-labelledby="univModalTitle">
+        <div class="modal-header">
+          <h3 id="univModalTitle">🏛️ Add Custom University</h3>
+          <button type="button" class="modal-close-btn" id="closeUnivModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="univManageForm">
+            <input type="hidden" id="univModalMode" value="create">
+            <div class="form-group">
+              <label for="univModalName">University Name *</label>
+              <input type="text" id="univModalName" class="form-control" required placeholder="e.g. Technical University of Munich">
+            </div>
+
+            <div class="form-group">
+              <label for="univModalLeadUrl">Official Website / Faculty URL *</label>
+              <input type="url" id="univModalLeadUrl" class="form-control font-mono" required placeholder="https://www.tum.de">
+              <span class="form-hint">Used as the entry point for 1-click autonomous research crawls.</span>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="univModalDomain">Domain Identifier</label>
+                <input type="text" id="univModalDomain" class="form-control font-mono" placeholder="tum.de">
+                <span class="form-hint">Auto-extracted if left blank.</span>
+              </div>
+              <div class="form-group">
+                <label for="univModalCountry">Country *</label>
+                <select id="univModalCountry" class="form-control" required>
+                  <option value="United States">🇺🇸 United States</option>
+                  <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                  <option value="Canada">🇨🇦 Canada</option>
+                  <option value="Germany">🇩🇪 Germany</option>
+                  <option value="Australia">🇦🇺 Australia</option>
+                  <option value="Switzerland">🇨🇭 Switzerland</option>
+                  <option value="Singapore">🇸🇬 Singapore</option>
+                  <option value="Japan">🇯🇵 Japan</option>
+                  <option value="France">🇫🇷 France</option>
+                  <option value="Netherlands">🇳🇱 Netherlands</option>
+                  <option value="Sweden">🇸🇪 Sweden</option>
+                  <option value="India">🇮🇳 India</option>
+                  <option value="South Korea">🇰🇷 South Korea</option>
+                  <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
+                  <option value="United Arab Emirates">🇦🇪 UAE</option>
+                  <option value="Pakistan">🇵🇰 Pakistan</option>
+                  <option value="Brazil">🇧🇷 Brazil</option>
+                  <option value="South Africa">🇿🇦 South Africa</option>
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="univModalNotes">Personal Application Notes / Departments</label>
+              <textarea id="univModalNotes" class="form-control" rows="3" placeholder="e.g. Renowned AI department, offers DAAD funding, application deadline Dec 15."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="univModalShortlist"> ⭐ Add directly to my application Shortlist
+              </label>
+            </div>
+        </div>
+        <div class="modal-footer flex-row-between">
+          <button type="button" class="btn btn-secondary btn-sm" id="cancelUnivModalBtn">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm" id="saveUnivModalBtn">💾 Save University</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. Pre-Send Inspection & Queue Dispatch Modal -->
+    <div class="modal-backdrop hidden" id="preSendModalBackdrop">
+      <div class="modal-dialog modal-lg" role="dialog" aria-modal="true" aria-labelledby="preSendModalTitle">
+        <div class="modal-header">
+          <h3 id="preSendModalTitle">🔍 Pre-Send Safety Review & Dispatch Verification</h3>
+          <button type="button" class="modal-close-btn" id="closePreSendModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p class="text-sm text-muted mb-3">Verify all details, cryptographic version hashes, recipient policies, and sender account limits before dispatching to the durable outbound queue.</p>
+          
+          <div id="preSendModalContent">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div class="modal-footer flex-row-between">
+          <button type="button" class="btn btn-secondary btn-sm" id="cancelPreSendModalBtn">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm" id="confirmPreSendQueueBtn">🚀 Enqueue for Outbound Dispatch</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13. Autonomous Gathering Agent Start Modal -->
+    <div class="modal-backdrop hidden" id="agentStartModalBackdrop">
+      <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="agentStartModalTitle" style="max-width: 580px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #0F172A, #1E293B); border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <div class="flex-row-between align-center gap-2">
+            <span style="font-size: 24px;">⚡</span>
+            <div>
+              <h3 id="agentStartModalTitle" style="color: #F8FAFC; margin: 0;">Scholarship Outreach Agent</h3>
+              <span class="text-xs text-muted">Single-click autonomous scholarship & faculty discovery</span>
+            </div>
+          </div>
+          <button type="button" class="modal-close-btn" id="closeAgentStartModalBtn" aria-label="Close" style="color: #94A3B8;">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 24px;">
+          <form id="agentStartQuickForm">
+            <!-- 1. Degree Levels -->
+            <div class="form-group mb-4">
+              <label style="font-weight: 600; display: block; margin-bottom: 8px;">1. Target Degree Level(s) *</label>
+              <div class="degree-checkbox-group" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                <label class="degree-pill-checkbox">
+                  <input type="checkbox" name="agent_degree" value="BS">
+                  <span>BS</span>
+                </label>
+                <label class="degree-pill-checkbox">
+                  <input type="checkbox" name="agent_degree" value="MS">
+                  <span>MS</span>
+                </label>
+                <label class="degree-pill-checkbox">
+                  <input type="checkbox" name="agent_degree" value="MPhil">
+                  <span>MPhil</span>
+                </label>
+                <label class="degree-pill-checkbox selected">
+                  <input type="checkbox" name="agent_degree" value="PhD" checked>
+                  <span>PhD</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- 2. Subject / Field -->
+            <div class="form-group mb-4">
+              <label for="agentSubjectInput" style="font-weight: 600; display: block; margin-bottom: 8px;">2. Subject / Field of Study *</label>
+              <input type="text" id="agentSubjectInput" class="form-control" placeholder="e.g. Computer Vision, Machine Learning, Robotics" required style="font-size: 15px; padding: 10px 14px;">
+              <span class="form-hint">The agent will scrape official university departments and rank faculty matching this research area.</span>
+            </div>
+
+            <!-- 3. Preferred Countries -->
+            <div class="form-group mb-4">
+              <label for="agentCountriesInput" style="font-weight: 600; display: block; margin-bottom: 8px;">3. Preferred Countries (Optional)</label>
+              <input type="text" id="agentCountriesInput" class="form-control" placeholder="e.g. United States, United Kingdom, Germany, Canada, Switzerland">
+              <span class="form-hint">Leave blank for worldwide search across all top academic institutions.</span>
+            </div>
+
+            <!-- Summary Note -->
+            <div class="p-3 bg-subtle rounded mb-2" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 8px;">
+              <div class="text-xs" style="color: #10B981; font-weight: 600; margin-bottom: 4px;">🎯 End-to-End Pipeline Summary:</div>
+              <p class="text-xs text-muted mb-0">Search scholarships ➔ Open official university portals ➔ Collect eligibility & office contacts ➔ Extract faculty matching your subject ➔ Rank professors ➔ Auto-generate Excel & CSV for instant download.</p>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer flex-row-between" style="padding: 16px 24px; background: #0F172A; border-top: 1px solid rgba(255,255,255,0.08);">
+          <button type="button" class="btn btn-secondary btn-sm" id="cancelAgentStartModalBtn">Cancel</button>
+          <button type="button" class="btn btn-primary" id="launchAgentBtn" style="background: linear-gradient(135deg, #10B981, #059669); font-weight: 700; padding: 10px 22px; border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);">
+            <span>🚀 Start Gathering</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14. Autonomous Gathering Agent Live Progress Modal -->
+    <div class="modal-backdrop hidden" id="agentProgressModalBackdrop">
+      <div class="modal-dialog modal-lg" role="dialog" aria-modal="true" aria-labelledby="agentProgressModalTitle" style="max-width: 860px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #0F172A, #1E293B); border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <div class="flex-row-between align-center gap-3">
+            <div class="status-pulse-dot" id="agentProgressPulseDot"></div>
+            <div>
+              <h3 id="agentProgressModalTitle" style="color: #F8FAFC; margin: 0;">Scholarship Agent in Progress</h3>
+              <span class="text-xs text-muted" id="agentLiveUniversitySub">Searching global academic institutions...</span>
+            </div>
+          </div>
+          <button type="button" class="modal-close-btn" id="closeAgentProgressModalBtn" aria-label="Close" style="color: #94A3B8;">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 24px;">
+          
+          <!-- Current Step Box -->
+          <div class="current-step-card mb-4" style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 16px;">
+            <div class="flex-row-between align-center mb-2">
+              <span class="text-xs text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Current Pipeline Stage</span>
+              <span class="badge badge-teal" id="agentProgressPercentBadge">0% Complete</span>
+            </div>
+            <h4 id="agentCurrentStepText" style="margin: 0; color: #38BDF8; font-size: 16px; font-weight: 600;">Initializing Agent...</h4>
+            <div class="progress-bar-wrap mt-3" style="background: rgba(0,0,0,0.3); height: 8px; border-radius: 4px; overflow: hidden;">
+              <div class="progress-bar-fill" id="agentProgressBar" style="width: 5%; background: linear-gradient(90deg, #38BDF8, #10B981); height: 100%; transition: width 0.4s ease;"></div>
+            </div>
+          </div>
+
+          <!-- Live Metrics Counters -->
+          <div class="agent-counters-grid mb-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+            <div class="agent-counter-card" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; text-align: center;">
+              <span style="font-size: 20px; display: block; margin-bottom: 4px;">🏛️</span>
+              <strong class="font-mono" id="agentStatUniversities" style="font-size: 22px; color: #F8FAFC;">0</strong>
+              <span class="text-xs text-muted" style="display: block; margin-top: 2px;">Universities</span>
+            </div>
+            <div class="agent-counter-card" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; text-align: center;">
+              <span style="font-size: 20px; display: block; margin-bottom: 4px;">🏆</span>
+              <strong class="font-mono" id="agentStatScholarships" style="font-size: 22px; color: #34D399;">0</strong>
+              <span class="text-xs text-muted" style="display: block; margin-top: 2px;">Scholarships</span>
+            </div>
+            <div class="agent-counter-card" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; text-align: center;">
+              <span style="font-size: 20px; display: block; margin-bottom: 4px;">🔬</span>
+              <strong class="font-mono" id="agentStatProfessors" style="font-size: 22px; color: #A78BFA;">0</strong>
+              <span class="text-xs text-muted" style="display: block; margin-top: 2px;">Professors</span>
+            </div>
+            <div class="agent-counter-card" style="background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 14px; text-align: center;">
+              <span style="font-size: 20px; display: block; margin-bottom: 4px;">⚡</span>
+              <strong class="font-mono" id="agentStatTokens" style="font-size: 22px; color: #FBBF24;">0</strong>
+              <span class="text-xs text-muted" style="display: block; margin-top: 2px;">AI Tokens</span>
+            </div>
+          </div>
+
+          <!-- Scrolling Live Action Terminal Log -->
+          <div class="agent-terminal-card mb-3" style="background: #090D16; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden;">
+            <div class="terminal-header flex-row-between align-center" style="background: #0F172A; padding: 8px 14px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+              <span class="text-xs" style="color: #94A3B8; font-family: monospace;">📋 Live Agent Action Logs</span>
+              <span class="text-xs text-muted font-mono" id="agentElapsedTimer">Elapsed: 0s</span>
+            </div>
+            <div class="terminal-body font-mono text-xs" id="agentTerminalLogs" style="height: 180px; overflow-y: auto; padding: 12px; color: #E2E8F0; line-height: 1.6;">
+              <!-- Logs populated by JS -->
+            </div>
+          </div>
+
+          <!-- Finished Downloads Action Box (Shown when completed) -->
+          <div class="agent-completion-box hidden" id="agentCompletionBox" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 78, 59, 0.2)); border: 1px solid #10B981; border-radius: 10px; padding: 18px; text-align: center;">
+            <span style="font-size: 32px; display: block; margin-bottom: 6px;">🎉</span>
+            <h4 style="color: #10B981; margin: 0 0 6px 0; font-size: 18px;">Data Gathering Complete!</h4>
+            <p class="text-xs text-muted mb-3">All discovered scholarships, eligibility details, official contacts, and ranked faculty members have been compiled and deduplicated.</p>
+            <div class="flex-row-center gap-3" style="display: flex; justify-content: center; gap: 14px;">
+              <button type="button" class="btn btn-primary" id="agentDownloadExcelBtn" style="background: #10B981; border: none; font-weight: 600; padding: 10px 20px;">
+                <span>📥 Download Excel Workbook (.xlsx)</span>
+              </button>
+              <button type="button" class="btn btn-secondary" id="agentDownloadCsvBtn" style="font-weight: 600; padding: 10px 20px;">
+                <span>📥 Download Clean CSV</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer flex-row-between" style="padding: 16px 24px; background: #0F172A; border-top: 1px solid rgba(255,255,255,0.08);">
+          <div class="flex-row-between gap-2">
+            <button type="button" class="btn btn-secondary btn-sm" id="agentPauseBtn">⏸️ Pause</button>
+            <button type="button" class="btn btn-secondary btn-sm hidden" id="agentResumeBtn">▶️ Resume</button>
+            <button type="button" class="btn btn-danger btn-sm" id="agentStopBtn">⏹️ Stop</button>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="dismissAgentProgressBtn">Close Window</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  </div>
+
+  <!-- Main Application Controller Script -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
