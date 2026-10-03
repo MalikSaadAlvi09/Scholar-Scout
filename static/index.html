@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="/static/css/visuals.css">
 </head>
 <body>
   <div id="app" class="app-container">
@@ -140,6 +141,30 @@
             </div>
           </div>
 
+          <div class="sc-discovery-hero">
+            <div class="sc-hero-copy">
+              <span class="sc-eyebrow"><span class="sc-spark" aria-hidden="true"></span> YOUR NEXT CHAPTER STARTS HERE</span>
+              <h2>A world of research.<br><em>A future that fits you.</em></h2>
+              <p>Discover academic funding, connect your interests with faculty, and shape your next step with evidence.</p>
+              <div class="sc-hero-actions">
+                <button type="button" class="btn sc-primary" id="visualStartAgent">Explore with your agent <span aria-hidden="true">↗</span></button>
+                <button type="button" class="sc-text-button" id="visualBrowseUniversities">Browse universities →</button>
+              </div>
+              <div class="sc-hero-footnote"><span aria-hidden="true">◎</span> Official sources. Explainable matches. Your ambition.</div>
+            </div>
+            <div class="sc-model-panel">
+              <div class="sc-scene-tabs" role="group" aria-label="3D illustration">
+                <button type="button" class="selected" data-sc-model="globe" aria-pressed="true">World of discovery</button>
+                <button type="button" data-sc-model="campus" aria-pressed="false">Campus model</button>
+              </div>
+              <div id="scModelStage" class="sc-model-stage" tabindex="0" role="img" aria-label="Decorative 3D globe. Drag or use arrow keys to rotate. This illustration does not represent live research results.">
+                <img class="sc-model-fallback" src="/static/assets/research-campus.webp" alt="Illustrated university with a glass research wing and orbital rings" width="1536" height="1024">
+              </div>
+              <div class="sc-model-caption"><span id="scModelHint">Interactive illustration · Drag to rotate</span><button type="button" id="scMotionToggle" aria-pressed="false">Pause motion</button></div>
+            </div>
+          </div>
+          <div class="sc-section-caption"><span>YOUR RESEARCH AT A GLANCE</span><span>From your workspace</span></div>
+
           <!-- Top Metrics Bar (Actual Database Counts) -->
           <div class="metrics-grid">
             <div class="metric-card" id="metricCardJobs" tabindex="0" role="button" title="View all research jobs">
@@ -261,6 +286,10 @@
             <!-- Right Column: Top Faculty & Telemetry -->
             <div class="overview-col-side">
               
+              <figure class="sc-campus-feature">
+                <img src="/static/assets/research-campus.webp" alt="Conceptual university campus with classical architecture and a contemporary research laboratory" width="1536" height="1024" loading="lazy">
+                <figcaption><span class="sc-eyebrow">BUILT AROUND YOUR CURIOSITY</span><strong>Big ideas begin<br>with the right place.</strong><span>Explore. Match. Make your next move.</span></figcaption>
+              </figure>
               <!-- Top Faculty Matches Card -->
               <div class="card">
                 <div class="card-header">
@@ -2702,5 +2731,7 @@
 
   <!-- Main Application Controller Script -->
   <script src="/static/js/app.js"></script>
+  <script defer src="/static/vendor/three.min.js"></script>
+  <script defer src="/static/js/visuals.js"></script>
 </body>
 </html>
